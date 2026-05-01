@@ -1,24 +1,34 @@
 package se.su.inlupp;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class ListGraph<T> implements Graph<T> {
 
+  private final Map<T, Set<Edge<T>>> list = new HashMap<>();
+
   @Override
   public void add(T node) {
-    throw new UnsupportedOperationException("Unimplemented method 'add'");
+  list.putIfAbsent(node, new HashSet<>());
   }
 
   @Override
   public void remove(T node) {
-    throw new UnsupportedOperationException("Unimplemented method 'remove'");
+    if (!list.containsKey(node)){
+      throw new NoSuchElementException();
+    }
+    for( T n : list.keySet()){
+    list.get(n).removeIf(edge -> edge.getDestination().equals(node));
+    }
+    list.remove(node);
   }
 
   @Override
   public boolean hasNode(T node) {
-    throw new UnsupportedOperationException("Unimplemented method 'hasNode'");
+    if (!list.containsKey(node)){
+      return false;
+    }
+    return true;
+
   }
 
   @Override
