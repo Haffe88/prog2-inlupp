@@ -1,12 +1,18 @@
 package se.su.inlupp;
 
 public interface Edge<T> {
-
-  int getWeight();
-
-  void setWeight(int weight);
-
-  T getDestination();
-
-  String getName();
+	
+	T getDestination();
+	
+	int getWeight();
+	
+	void setWeight(int weight);
+	//Om vikten är negativ skall undantaget IllegalArgumentException genereras.
+	
+	String getName();
+	
+	public String toString();
+	//ska ha en meningsfull toString-metod
 }
+
+//Kant i grafen

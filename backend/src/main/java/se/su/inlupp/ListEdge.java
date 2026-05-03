@@ -37,5 +37,14 @@ public class ListEdge<T> implements Edge<T> {
     public String getName(){
         return name;
     }
+    
+    @Override
+    public String toString(){
+    	
+    	//ska ha en meningsfull toString-metod
+
+    }
+    
+    
 
 }

@@ -2,6 +2,7 @@ package se.su.inlupp;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.*;
 
 public interface Graph<T> extends Iterable<T> {
 
@@ -24,3 +25,5 @@ public interface Graph<T> extends Iterable<T> {
   Edge<T> getEdgeBetween(T node1, T node2);
 }
 
+//Graf med kopplingslistor
+//Ska tillhandahålla en iterator() som itererar över grafens noder

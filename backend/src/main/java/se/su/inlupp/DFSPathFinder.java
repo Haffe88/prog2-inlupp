@@ -8,3 +8,5 @@ public class DFSPathFinder<T> implements PathFinder<T> {
   }
 }
 
+//Djupetförst-sökning för att hitta väg mellan två noder
+//skall returnera en Path<T> som representerar den hittade vägen, eller null om ingen väg finns.
