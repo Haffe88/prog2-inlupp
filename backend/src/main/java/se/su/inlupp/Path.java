@@ -20,3 +20,6 @@ public interface Path<T> extends Iterable<Edge<T>> {
 }
 
 //Väg genom grafen
+
+
+//Vi behöver en klass som implementerar gränssnittet

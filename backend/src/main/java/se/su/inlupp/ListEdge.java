@@ -40,6 +40,7 @@ public class ListEdge<T> implements Edge<T> {
     
     @Override
     public String toString(){
+    	return "..";
     	
     	//ska ha en meningsfull toString-metod
 
