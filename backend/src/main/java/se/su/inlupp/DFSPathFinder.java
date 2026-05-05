@@ -8,25 +8,36 @@ public class DFSPathFinder<T> implements PathFinder<T> {
   public Path<T> findPath(Graph<T> graph, T from, T to) {
 	  
 	  Map <T, T> connections = new HashMap<>();
-	  connect(from, null, connections);
-	  LinkedList<Edge> path = new LinkedList<>();
+	  connect(graph, from, null, connections);
+
+	  if (!connections.containsKey(to)){
+		  return null;
+	  }
+
+	  LinkedList<Edge<T>> path = new LinkedList<>();
 	  
 	  T current = to;
 	  
-	  while(current != null && !current.equals(from) {
-		  T next = connections.get(current)
-		  Edge edge = getEdgeBetween(current, next);
+	  while(current != null && !current.equals(from)) {
+		  T next = connections.get(current);
+		  Edge<T> edge = graph.getEdgeBetween(next,current);
 		  path.addFirst(edge);
 		  current = next;
-	  
 	  }
 	  
-	  return null;
-	  
-	  
-	  
-   // throw new UnsupportedOperationException("Unimplemented method 'findPath'");
+	  return new ListPath<>(from, path);
   }
+	private void connect(Graph<T> graph, T to, T from, Map<T, T> connections) {
+		connections.put(to, from);
+
+		for (Edge<T> edge : graph.getEdgesFrom(to)){
+			T destination = edge.getDestination();
+
+			if (!connections.containsKey(destination)) {
+				connect(graph,destination, to, connections);
+			}
+		}
+	}
 }
 
 //Påbörjade koden här men det krävs en path-klass som implementerar path-interfacet för att man ska kunna returnera här
