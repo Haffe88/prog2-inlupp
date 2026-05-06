@@ -40,10 +40,9 @@ public class ListEdge<T> implements Edge<T> {
     
     @Override
     public String toString(){
-    	return "..";
+    	return "till " + destination + " med " + name + " tar " + weight;
     	
     	//ska ha en meningsfull toString-metod
-
     }
     
     

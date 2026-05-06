@@ -1,18 +1,17 @@
 package se.su.inlupp;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ListPath<T> implements Path<T> {
 
 	private final T start;
 	private final List<Edge<T>> edges;
-	private int totalWeight;
 
 	public ListPath(T start, List<Edge<T>>edges){
 		this.start = start;
 		this.edges = new ArrayList<>(edges);
-
 	}
 
 	@Override
@@ -41,7 +40,7 @@ public class ListPath<T> implements Path<T> {
 	
 	@Override
 	public List<Edge<T>> getEdges(){
-		return this.edges;
+		return new ArrayList<>(edges);
 	}
 	
 	
@@ -62,10 +61,19 @@ public class ListPath<T> implements Path<T> {
 
 		return nodeList;
 	}
-	
+
+    @Override
+    public Iterator<Edge<T>> iterator() {
+        return edges.iterator();
+    }
 	
 	@Override
 	public String toString() {
+
+    return "From" + getStart() +
+    ", To:" + getEnd() +
+    ", Path:" + edges +
+    ", Total weight: " + getTotalWeight();
 		
 	}
 

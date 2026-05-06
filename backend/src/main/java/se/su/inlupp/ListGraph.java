@@ -152,7 +152,21 @@ public class ListGraph<T> implements Graph<T> {
   
   @Override
   public String toString() {
-	  return "...";
+
+	  StringBuilder sb = new StringBuilder();
+
+	  for (T node : getNodes()) {
+		  sb.append(node).append(": ");
+
+		  for (Edge<T> edge : getEdgesFrom(node)) {
+			  sb.append(edge).append(" ");
+		  }
+
+		  sb.append("\n");
+	  }
+
+	  return sb.toString();
+
 	  //behöver använda stringbuilder här
 	  //returnerar en sträng med information om alla noder och deras kanter, gärna med radbrytningar för förbättrad läsbarhet.
   }

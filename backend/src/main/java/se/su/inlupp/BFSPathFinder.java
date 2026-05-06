@@ -12,24 +12,37 @@ public class BFSPathFinder<T> implements PathFinder<T> {
 	  connections.put(from, null);
 	  
 	  LinkedList<T> queue = new LinkedList<>();
+
 	  queue.add(from);
 	  
 	  while(!queue.isEmpty()) {
 		  T current = queue.poll();
 		  
-		  for (Edge edge: graph.getEdgesFrom(current)) {
+		  for (Edge<T> edge: graph.getEdgesFrom(current)) {
 			  T next = edge.getDestination();
 			  
-			  if(connections.containsKey(next)) {
+			  if(!connections.containsKey(next)) {
 				  connections.put(next, current);
 				  queue.add(next);
 			  }
 		  }
 	  }
-	  
-	  return null;
-	  
-   // throw new UnsupportedOperationException("Unimplemented method 'findPath'");
+	  if (!connections.containsKey(to)){
+		  return null;
+	  }
+	  LinkedList<Edge<T>> path = new LinkedList<>();
+
+	  T current = to;
+
+	  while(current != null && !current.equals(from)) {
+		  T next = connections.get(current);
+		  Edge<T> edge = graph.getEdgeBetween(next,current);
+		  path.addFirst(edge);
+		  current = next;
+	  }
+
+	  return new ListPath<>(from, path);
+
   }
 }
 
