@@ -22,7 +22,7 @@ public class Gui extends Application {
     stage.setScene(scene);
     stage.show();
   }
-//Julias kommentar
+//Julias kommentar ny
   public static void main(String[] args) {
     launch(args);
   }
