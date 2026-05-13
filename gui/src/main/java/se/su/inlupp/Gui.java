@@ -82,6 +82,8 @@ public class Gui extends Application {
     }
   }
 
+  //Hanterare för att öppna en fil
+
   public static void main(String[] args) {
     launch(args);
   }
