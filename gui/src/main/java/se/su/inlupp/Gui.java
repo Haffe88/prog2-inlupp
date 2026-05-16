@@ -7,9 +7,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -20,6 +20,7 @@ public class Gui extends Application {
 
   private Stage stage;
   private FileChooser fileChooser = new FileChooser();
+  private ImageView backgroundMapView;
 
   public void start(Stage stage) {
     this.stage = stage;
@@ -49,6 +50,7 @@ public class Gui extends Application {
     openFile.setOnAction(new OpenFileHandler());
 
     MenuItem loadBackground = new MenuItem("Ladda in bild");
+    loadBackground.setOnAction(new LoadBackgroundHandler());
 
     MenuItem saveFile = new MenuItem("Spara");
     saveFile.setOnAction(new SaveFileHandler());
@@ -72,16 +74,22 @@ public class Gui extends Application {
     VBox top = new VBox(0, menuBar);
     FlowPane bottom = new FlowPane(addLocation, removeLocation, connectLocations, findPath);
 
+
+    backgroundMapView = new ImageView();
+    StackPane center = new StackPane();
+    center.getChildren().add(backgroundMapView);
+
     //använd pos och setposition för att centrera den
 
 
     root.setTop(top);
     root.setBottom(bottom);
-    bottom.setAlignment(Pos.TOP_CENTER);
+    root.setCenter(center);
+    bottom.setAlignment(Pos.CENTER);
     bottom.setHgap(20);
     bottom.setPadding(new Insets(10));
 
-    //Sätta delarna i Borderpanen, sätta alignment för knapparna i bottom och gap mellan knapparna, samt padding runt varje knapp
+    //Sätta delarna i Borderpanen, sätta alignment för knapparna i bottom, samt padding runt varje knapp, 20 i gap mellan knappar
 
 
     Scene scene = new Scene(root, 640, 480);
@@ -89,6 +97,11 @@ public class Gui extends Application {
     stage.show();
 
     //Skapa och visa scenen
+
+    backgroundMapView.fitWidthProperty().bind(center.widthProperty());
+    backgroundMapView.fitHeightProperty().bind(center.heightProperty());
+
+    //uppdaterar backgroundMapViews bredd och höjd, binder till center bredd och höjd
   }
 
   private class OpenFileHandler implements EventHandler<ActionEvent>{
@@ -114,6 +127,20 @@ public class Gui extends Application {
 
   //Hanterare för att spara en fil
 
+  private class LoadBackgroundHandler implements EventHandler<ActionEvent>{
+    @Override
+    public void handle(ActionEvent arg0){
+      fileChooser.setInitialDirectory(new File("."));
+      File pictureToLoad = fileChooser.showOpenDialog(stage);
+
+      if (pictureToLoad != null){
+        Image image = new Image(pictureToLoad.toURI().toString());
+        backgroundMapView.setImage(image);
+      }
+    }
+  }
+
+  //Hanterare för att ladda in en bild till bakgrunden
 
 /*
   private class addLocationHandler implements EventHandler<ActionEvent>{
