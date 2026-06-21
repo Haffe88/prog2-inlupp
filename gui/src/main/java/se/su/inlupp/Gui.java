@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.scene.input.MouseEvent;
 
 import java.io.File;
 
@@ -21,6 +22,9 @@ public class Gui extends Application {
   private Stage stage;
   private FileChooser fileChooser = new FileChooser();
   private ImageView backgroundMapView;
+  private Pane center;
+
+  private Graph<Location> graph = new ListGraph<>();
 
   public void start(Stage stage) {
     this.stage = stage;
@@ -62,7 +66,7 @@ public class Gui extends Application {
     //Menyn med alternativen i menyn - samt setOnAction
 
     Button addLocation = new Button("Lägg till plats");
-    //addLocation.setOnAction(new addLocationHandler());
+    addLocation.setOnAction(new AddLocationHandler());
     Button removeLocation = new Button("Ta bort plats");
     Button connectLocations = new Button("Ange väg mellan platser");
     Button findPath = new Button("Hitta väg");
@@ -76,10 +80,12 @@ public class Gui extends Application {
 
 
     backgroundMapView = new ImageView();
-    StackPane center = new StackPane();
+    center = new Pane();
     center.getChildren().add(backgroundMapView);
 
     //använd pos och setposition för att centrera den
+
+    // Har bytt ut StackPane mot Pane för StackPane centrerar sina barn automatiskt så jag kan inte placera ut locations på olika ställen.
 
 
     root.setTop(top);
@@ -142,20 +148,46 @@ public class Gui extends Application {
 
   //Hanterare för att ladda in en bild till bakgrunden
 
-/*
-  private class addLocationHandler implements EventHandler<ActionEvent>{
+
+  private class AddLocationHandler implements EventHandler<ActionEvent> {
     @Override
-    public void handle(){
+    public void handle(ActionEvent event) {
       NewLocationForm newLocationform = new NewLocationForm();
-      newLocationform.showAndWait().ifPresent();
+      newLocationform.showAndWait().ifPresent(locationName -> {
+        center.setOnMouseClicked(new ClickHandler(locationName));
+      });
     }
   }
-  */
+
   //Började försöka fixa popupfönster till addLocation-knappen men fastnade
 
 
+  class ClickHandler implements EventHandler<MouseEvent>{
 
-  public static void main(String[] args) {
-    launch(args);
+      private String locationName;
+
+      public ClickHandler(String locationName) {
+        this.locationName = locationName;
+      }
+
+        @Override
+          public void handle(MouseEvent event) {
+            double x = event.getX();
+            double y = event.getY();
+
+            Location location = new Location(locationName, x,y);
+            graph.add(location);                                        //Denna gör att location läggs in i grafklassen.
+            center.getChildren().add(location);
+
+            center.setOnMouseClicked(null);
+          }
   }
-}
+        // Denna eventhandler aktiveras bara om det finns ett namn från NewLocationForm, det är eventhandlern AddLocationHandler
+        // som styr den logiken. Aktiveras den så tar den namnet som skrivits in tillsammans med koordinaterna där vi tryckt och skapar en location. Location i sin
+        // tur placerar ut sig på kartan utifrån koordinaterna med cirkel och namn. Location läggs även till i ListGraph.
+
+
+      public static void main (String[]args){
+        launch(args);
+      }
+    }
