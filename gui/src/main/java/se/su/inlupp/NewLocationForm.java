@@ -48,15 +48,4 @@ public class NewLocationForm extends Dialog<String> {
 
         }
 
-
-
-
-
-
-
-
-
-
-
-
 //Detta ska vara popup-fönstret till addLocation knappen - men fastnade i koden här.

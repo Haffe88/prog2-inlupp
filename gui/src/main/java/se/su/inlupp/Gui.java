@@ -23,6 +23,7 @@ public class Gui extends Application {
   private FileChooser fileChooser = new FileChooser();
   private ImageView backgroundMapView;
   private Pane center;
+  private boolean removeMode = false;
 
   private Graph<Location> graph = new ListGraph<>();
 
@@ -68,6 +69,7 @@ public class Gui extends Application {
     Button addLocation = new Button("Lägg till plats");
     addLocation.setOnAction(new AddLocationHandler());
     Button removeLocation = new Button("Ta bort plats");
+    removeLocation.setOnAction (new RemoveLocationHandler());
     Button connectLocations = new Button("Ange väg mellan platser");
     Button findPath = new Button("Hitta väg");
 
@@ -128,7 +130,6 @@ public class Gui extends Application {
       File fileToSave = fileChooser.showOpenDialog(stage);
       System.out.println(fileToSave);
     }
-
   }
 
   //Hanterare för att spara en fil
@@ -175,7 +176,14 @@ public class Gui extends Application {
             double x = event.getX();
             double y = event.getY();
 
-            Location location = new Location(locationName, x,y);
+            Location location = new Location(locationName, x,y);      //Här skapas en location
+
+            location.setOnMouseClicked(e -> {                         //Här berättar jag för location att den ska reagera på musklick, men bara om
+              if (removeMode){                                        //removemode är sant, vilket sätts av ta bort knappen.
+                new DeleteLocationHandler(location).handle(e);
+              }
+                    });
+
             graph.add(location);                                        //Denna gör att location läggs in i grafklassen.
             center.getChildren().add(location);
 
@@ -185,6 +193,45 @@ public class Gui extends Application {
         // Denna eventhandler aktiveras bara om det finns ett namn från NewLocationForm, det är eventhandlern AddLocationHandler
         // som styr den logiken. Aktiveras den så tar den namnet som skrivits in tillsammans med koordinaterna där vi tryckt och skapar en location. Location i sin
         // tur placerar ut sig på kartan utifrån koordinaterna med cirkel och namn. Location läggs även till i ListGraph.
+
+
+  class DeleteLocationHandler implements EventHandler<MouseEvent> {
+
+    private Location location;
+
+    public DeleteLocationHandler(Location location){
+        this.location = location;
+    }
+    @Override
+    public void handle(MouseEvent event){
+      DeleteLocationForm deleteLocationForm = new DeleteLocationForm(location);
+      deleteLocationForm.showAndWait().ifPresent(result -> {
+        if (result){
+          graph.remove(location);
+          center.getChildren().remove(location);
+          removeMode = false;
+      }
+      });
+    }
+  }
+
+  // Denna aktiveras av ett musklick på en plats man lagt till, den skapar först en DelereLocationFOrm som det finns en egen klass för
+  // Det är en meny där man får frågan om man verkligen vill ta bort ett objekt. Vill man det så får man tillbaka en boolean true (Alltså if (result))
+  // Då tar den bort platsen i graf och i gui.
+
+
+
+  private class RemoveLocationHandler implements EventHandler<ActionEvent>{
+    @Override
+    public void handle(ActionEvent event) {
+      removeMode = true;
+    }
+  }
+  // Det den här eventhandlern gör är bara att sätta en variabel "removeMode" till true så, den aktiviteras om man trycker
+  // på "ta bort"-knappen och det är det enda "ta bort" knappen gör. När vi skapar en location så säger vi sedan till location
+  // att om removeMode är "true" då får du aktivivera den kedja av händelser som gör att en location tas bort.
+
+
 
 
       public static void main (String[]args){

@@ -11,6 +11,7 @@ public class Location extends StackPane {
     private double x;
     private double y;
 
+
     public Location(String name, double x, double y){
         this.name = name;
         this.x = x;
@@ -31,5 +32,11 @@ public class Location extends StackPane {
         getChildren().add(struktur);
 
         //Lägger till namn och cirkel i Stackpanen/Location - för att symbolisera en plats
+
     }
+
+    public String getName() {
+        return name;
+    }
+
 }
