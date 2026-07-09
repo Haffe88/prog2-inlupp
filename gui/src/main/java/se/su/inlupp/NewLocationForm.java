@@ -44,8 +44,6 @@ public class NewLocationForm extends Dialog<String> {
         // returnerar, för vi kan inte använda koordinater här på något bra sätt tror jag.
 
     }
-
-
         }
 
 //Detta ska vara popup-fönstret till addLocation knappen - men fastnade i koden här.
