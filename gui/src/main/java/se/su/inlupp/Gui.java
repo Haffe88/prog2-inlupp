@@ -19,6 +19,7 @@ import java.io.File;
 
 public class Gui extends Application {
 
+  //Julia testkommentar
 
   private Stage stage;
   private FileChooser fileChooser = new FileChooser();
