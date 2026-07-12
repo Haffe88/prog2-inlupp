@@ -106,7 +106,7 @@ public class Gui extends Application {
     bottom.setHgap(20);
     bottom.setPadding(new Insets(10));
 
-    //Sätta delarna i Borderpanen, sätta alignment för knapparna i bottom, samt padding runt varje knapp, 20 i gap mellan knappar
+    //Sätta delarna i Borderpanen, sätta alignment för knapparna i bottom, samt padding 10 runt varje knapp, 20 i gap mellan knappar
 
 
     Scene scene = new Scene(root, 640, 480);
@@ -131,7 +131,7 @@ public class Gui extends Application {
     }
   }
 
-  //Hanterare för att öppna en fil
+  //Hanterare för att öppna en fil, sätta in funktionalitet här så filen faktiskt kan öppnas
 
   private class SaveFileHandler implements EventHandler<ActionEvent>{
     @Override
@@ -141,7 +141,7 @@ public class Gui extends Application {
     }
   }
 
-  //Hanterare för att spara en fil
+  //Hanterare för att spara en fil, , sätta in funktionalitet här så filen faktiskt kan öppnas
 
   private class LoadBackgroundHandler implements EventHandler<ActionEvent>{
     @Override
@@ -196,7 +196,7 @@ public class Gui extends Application {
               }
                     });
 
-            graph.add(location);                                        //Denna gör att location läggs in i grafklassen.
+            graph.add(location);                                        //Denna gör att location läggs in i ListGraph-klassen.
             center.getChildren().add(location);
 
             center.setOnMouseClicked(null);
