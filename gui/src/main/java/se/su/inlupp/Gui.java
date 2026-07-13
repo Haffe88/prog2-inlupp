@@ -14,8 +14,10 @@ import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.WindowEvent;
 
 import java.io.File;
+import java.util.Optional;
 
 public class Gui extends Application {
 
@@ -29,6 +31,9 @@ public class Gui extends Application {
   private boolean connectMode = false;
   private Location firstSelected = null;
   private Location secondSelected = null;
+
+  private Boolean hasChanges = false;
+  //boolsk flagga för att se om programmet har ändrats eller ej (används i meny-alterantiven sen)
 
   private Graph<Location> graph = new ListGraph<>();
 
@@ -66,6 +71,8 @@ public class Gui extends Application {
     saveFile.setOnAction(new SaveFileHandler());
 
     MenuItem quit = new MenuItem("Avsluta");
+    //quit.setOnAction(new ExitHandler());
+    //ExitHandler anropas även ifall vi väljer alternativet avsluta i menyn
 
     menu.getItems().addAll(newFile, openFile, loadBackground, saveFile, quit);
 
@@ -110,6 +117,10 @@ public class Gui extends Application {
     //Sätta delarna i Borderpanen, sätta alignment för knapparna i bottom, samt padding 10 runt varje knapp, 20 i gap mellan knappar
 
 
+    stage.setOnCloseRequest(new WindowExitHandler());
+    //om man försöker stänga fönstret innan man sparar - så anropas ExitHandler
+
+
     Scene scene = new Scene(root, 640, 480);
     stage.setScene(scene);
     stage.show();
@@ -143,6 +154,31 @@ public class Gui extends Application {
   }
 
   //Hanterare för att spara en fil, , sätta in funktionalitet här så filen faktiskt kan öppnas
+/*
+  private class ExitHandler implements EventHandler<ActionEvent>{
+
+  }
+  //Hanterare för när man väljer alternativet Avsluta i menyn (varningsdialogruta vid osparade ändringar)
+*/
+  private class WindowExitHandler implements EventHandler<WindowEvent>{
+    @Override
+    public void handle(WindowEvent event){
+      if(hasChanges){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Du har osparade ändringar i programmet. Är du säker på att du vill avsluta?");
+        Optional<ButtonType> clicked = alert.showAndWait();
+        if (clicked.isPresent() && clicked.get().equals(ButtonType.CANCEL)){
+          event.consume();
+        }
+      }
+
+    }
+
+
+  }
+  //Hanterare för när man försöker stänga fönstret utan att spara (varningsdialogruta för osparade ändringar)
+  //Ta reda på vilken knapp som trycks på med showAndWait(), hittar button-typen som tryckdes på
+  //Kod från föreläsning F16
 
   private class LoadBackgroundHandler implements EventHandler<ActionEvent>{
     @Override
