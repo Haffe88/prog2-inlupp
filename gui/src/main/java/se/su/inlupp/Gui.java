@@ -256,12 +256,14 @@ public class Gui extends Application {
         ConnectLocationForm connectLocationForm = new ConnectLocationForm();      //skapar ett objekt av klassen och väntar sedan på resultat.
         connectLocationForm.showAndWait().ifPresent(result -> {
 
-          graph.connect(firstSelected,secondSelected,connectLocationForm.getConnectionName(), connectLocationForm.getConnectionWeight()   // .connect ligger i ListGraph
+          graph.connect(firstSelected,secondSelected,connectLocationForm.getConnectionName(), connectLocationForm.getConnectionLength()   // .connect ligger i ListGraph
 
           );
 
         // En metod kan inte returnera två stängar så det är lite svårare än tex NewLocationForm. Här hämtar vi instasvariablerna från klassen i stället, med
         // sånt som getConnectionName(). Det går att skapa ett nytt objekt för det vi behöver också men då behöver vi en ny klass.
+
+          /*
 
           Line line = new Line(
                   firstSelected.getLayoutX(),
@@ -272,8 +274,10 @@ public class Gui extends Application {
 
           center.getChildren().add(line);
 
-          //Den övre koden är för att rita ut en linje.
+          //Den dolda koden är för att rita ut en linje men jag pausar det arbetet för stunden.
 
+
+           */
         });
       firstSelected = null;
       secondSelected = null;

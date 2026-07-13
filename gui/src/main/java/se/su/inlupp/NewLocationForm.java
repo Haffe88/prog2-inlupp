@@ -25,16 +25,18 @@ public class NewLocationForm extends Dialog<String> {
         getDialogPane().setContent(grid);
         getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, placeraType);
 
-
-        // Jag har behållit din ursprungliga struktur här ovan, men jag funderar på om vi
-        // ska skapa knapparna själva istället för att använda DialogPane-knappar.
-        // Det känns mer flexibelt och ligger närmare den struktur som används på
-        // föreläsningarna, särskilt när vi vill ge knapparna egna namn och koppla
-        // egen logik till dem.
-
         setResultConverter(button->{
             if (button == placeraType) {
-                return name.getText();
+                if (name.getText().trim().isEmpty()){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(null);
+                    alert.setContentText("Platsens namn får inte vara tomt.");
+                    alert.showAndWait();
+
+                    return null;
+                }
+
+                return name.getText().trim();
             }
             return null;
 

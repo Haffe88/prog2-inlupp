@@ -9,7 +9,7 @@ import javafx.scene.layout.GridPane;
 public class ConnectLocationForm extends Dialog<Boolean> {
 
     private TextField name = new TextField();
-    private TextField weight = new TextField();
+    private TextField length = new TextField();
     //Ändra från vikt till avstånd (som vi skrev i planen vi skickade in)?
 
     public ConnectLocationForm(){
@@ -18,7 +18,7 @@ public class ConnectLocationForm extends Dialog<Boolean> {
 
         GridPane grid = new GridPane();
         grid.addRow(0, new Label("Vägens namn"), name);
-        grid.addRow(1, new Label ("Vikt:"), weight);
+        grid.addRow(1, new Label ("Längd:"), length);
 
         ButtonType connectType =
                 new ButtonType("Koppla", ButtonBar.ButtonData.OK_DONE);
@@ -29,19 +29,53 @@ public class ConnectLocationForm extends Dialog<Boolean> {
 
         setResultConverter(button->{
             if (button == connectType) {
-                return true;
+
+                try {
+                    if (name.getText().trim().isEmpty()){
+                        throw new IllegalArgumentException("Namnet får inte vara tomt");
+                    }
+
+                    int value = Integer.parseInt(length.getText());
+
+                    if (value < 0) {
+                        throw new IllegalArgumentException("Längden får inte vara negativ.");
+                    }
+
+                    return true;
+
+                } catch (NumberFormatException e) {
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(null);
+                    alert.setContentText("Längden måste vara ett heltal.");
+                    alert.showAndWait();
+
+                    return null;
+
+                } catch (IllegalArgumentException e) {
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(null);
+                    alert.setContentText(e.getMessage());
+                    alert.showAndWait();
+
+                    return null;
+                }
             }
             return null;
 
         });
+
+        // Det här ovan är felhantering, ungefär som vi gjorde i övning 3.
+
     }
 
     public String getConnectionName() {
         return name.getText();
     }
 
-    public int getConnectionWeight(){
-        return Integer.parseInt(weight.getText());
+    public int getConnectionLength(){
+        return Integer.parseInt(length.getText());
     }
 
 }
