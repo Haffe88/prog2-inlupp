@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
 
-import java.io.File;
+import java.io.*;
 import java.util.Optional;
 
 public class Gui extends Application {
@@ -79,7 +79,7 @@ public class Gui extends Application {
     saveFile.setOnAction(new SaveFileHandler());
 
     MenuItem quit = new MenuItem("Avsluta");
-    //quit.setOnAction(new ExitHandler());
+    quit.setOnAction(new ExitHandler());
     //ExitHandler anropas även ifall vi väljer alternativet avsluta i menyn
 
     menu.getItems().addAll(newFile, openFile, loadBackground, saveFile, quit);
@@ -142,33 +142,79 @@ public class Gui extends Application {
     //uppdaterar backgroundMapViews bredd och höjd, binder till center bredd och höjd
   }
 
-  private class OpenFileHandler implements EventHandler<ActionEvent>{
+  private class OpenFileHandler implements EventHandler<ActionEvent> {
     @Override
-    public void handle(ActionEvent arg0){
+    public void handle(ActionEvent arg0) {
       fileChooser.setInitialDirectory(new File("."));
       File fileToOpen = fileChooser.showOpenDialog(stage);
-      System.out.println(fileToOpen);
+      try{
+        FileReader fileReader = new FileReader(fileToOpen);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        //Tänker att filen kan läsas från som en CSV samt med filsökvägen/filnamnet till bilden som användaren laddade in i programmet
+        // (comma separated file, eftersom vi inte får sparas om binärfil) där varje objekt (med nod,nodnamn, edges med namn och vikt - komma, mellan varje) sparas i en arraylist??, och hur ska det läsas in i programmet?
+        //bufferedReader.close();
+
+      } catch (IOException e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+        alert.showAndWait();
+      }
+
+      hasChanges = false;
+
+
+      //System.out.println(fileToOpen);
 
     }
   }
 
   //Hanterare för att öppna en fil, sätta in funktionalitet här så filen faktiskt kan öppnas
+  //Skapar alert-fönster med error-typ när vi väljer en fil som är fel.
+  //hasChanges - sätts till false, inga ändringar när vi öppnar en fil
+  //Kod från föreläsning F16,F7
 
-  private class SaveFileHandler implements EventHandler<ActionEvent>{
+  private class SaveFileHandler implements EventHandler<ActionEvent> {
     @Override
-    public void handle(ActionEvent arg0){
+    public void handle(ActionEvent arg0) {
       File fileToSave = fileChooser.showOpenDialog(stage);
-      System.out.println(fileToSave);
+      try {
+        FileWriter fileWriter = new FileWriter(fileToSave);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        //Tänker att filen kan sparas som en CSV samt med filsökvägen/filnamnet till bilden som användaren laddade in i programmet
+        // (comma separated file, eftersom vi inte får sparas om binärfil) där varje objekt (med nod,nodnamn, edges med namn och vikt - komma, mellan varje) sparas i en arraylist??, och hur ska det läsas in i programmet?
+        // bufferedReader.close();
+        //bufferedWriter.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      hasChanges = false;
+      // System.out.println(fileToSave);
     }
   }
 
   //Hanterare för att spara en fil, , sätta in funktionalitet här så filen faktiskt kan öppnas
-/*
+  //hasChanges - sätts till false, inga ändringar när vi sparar en fil
+  //Kod från föreläsning F16, F7
+
+
   private class ExitHandler implements EventHandler<ActionEvent>{
+  public void handle(ActionEvent event){
+    if(hasChanges){
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+      alert.setContentText("Du har osparade ändringar i programmet. Är du säker på att du vill avsluta?");
+      Optional<ButtonType> clicked = alert.showAndWait();
+      if (clicked.isPresent() && clicked.get().equals(ButtonType.CANCEL)){
+        return;
+      }
+    }
+    stage.close();
+  }
 
   }
   //Hanterare för när man väljer alternativet Avsluta i menyn (varningsdialogruta vid osparade ändringar)
-*/
+  //Ser inte om fungerar än - måste implementera hasChanges när något förändras först
+  //Kod från föreläsning F16
+
   private class WindowExitHandler implements EventHandler<WindowEvent>{
     @Override
     public void handle(WindowEvent event){
@@ -186,6 +232,7 @@ public class Gui extends Application {
   }
   //Hanterare för när man försöker stänga fönstret utan att spara (varningsdialogruta för osparade ändringar)
   //Ta reda på vilken knapp som trycks på med showAndWait(), hittar button-typen som tryckdes på
+  //Ser inte om fungerar än - måste implementera hasChanges när något förändras först
   //Kod från föreläsning F16
 
   private class LoadBackgroundHandler implements EventHandler<ActionEvent>{
@@ -202,6 +249,7 @@ public class Gui extends Application {
   }
 
   //Hanterare för att ladda in en bild till bakgrunden
+  //Kod från föreläsning
 
 
   private class AddLocationHandler implements EventHandler<ActionEvent> {
@@ -439,6 +487,7 @@ public class Gui extends Application {
   }
 
 // Samma princip igen, en variabel som styr vad ett musklick ska reagera på skapas.
+  //Sätter findPathMode till true när man trycker på knappen findPath
 
   public static void main (String[]args){
         launch(args);
