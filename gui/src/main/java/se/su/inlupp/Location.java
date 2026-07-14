@@ -58,6 +58,15 @@ public class Location extends StackPane {
         }
     }
 
+    @Override
+    public String toString(){
+        return name;
+    }
+
+    // Lagt till en ToString här så att det skrivs ut rätt när man ska hitta en väg.
+
+
+
     //StartDragHandler - tar reda på var Location befann sig från början (var vi klickar på den), se instansvariabler - för tillgång i DragHandler
 
 
@@ -78,3 +87,4 @@ public class Location extends StackPane {
     //Får in Mouseevent - räkna ut ny X och Y utifrån layouten(var vi befann oss), och mouseEventets x/y (rörelsen som musen gjorde - som gav eventet)
     //Instansvariabler startX/Y (från StartDragHandler) dras av i uträkningen (för att den inte ska hoppa till när man först tar tag i Location)
 }
+

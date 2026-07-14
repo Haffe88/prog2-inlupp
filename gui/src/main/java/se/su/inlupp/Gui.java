@@ -29,8 +29,16 @@ public class Gui extends Application {
   private Pane center;
   private boolean removeMode = false;
   private boolean connectMode = false;
+
   private Location firstSelected = null;
   private Location secondSelected = null;
+  // Dessa två är är för metoden som connectar
+
+  private boolean findPathMode = false;
+  private Location pathStart = null;
+  private Location pathEnd = null;
+
+  // De här är för att hitta en väg
 
   private Boolean hasChanges = false;
   //boolsk flagga för att se om programmet har ändrats eller ej (används i meny-alterantiven sen)
@@ -87,8 +95,9 @@ public class Gui extends Application {
     Button connectLocations = new Button("Ange väg mellan platser");
     connectLocations.setOnAction (new ConnectButtonHandler());
 
-
     Button findPath = new Button("Hitta väg");
+    findPath.setOnAction (new FindPathButtonHandler());
+
 
     //Knappar i flowpane (bottom)
 
@@ -174,7 +183,6 @@ public class Gui extends Application {
 
     }
 
-
   }
   //Hanterare för när man försöker stänga fönstret utan att spara (varningsdialogruta för osparade ändringar)
   //Ta reda på vilken knapp som trycks på med showAndWait(), hittar button-typen som tryckdes på
@@ -231,6 +239,9 @@ public class Gui extends Application {
               if (connectMode){
                 new ConnectLocationHandler(location).handle(e);
               }
+              if (findPathMode) {
+                new FindPathHandler(location).handle(e);            //Som du ser så är logiken likadan för de andra knapparna. Knapparna
+              }                                                     //styr vad som händer vid musklicken på platsen.
                     });
 
             graph.add(location);                                        //Denna gör att location läggs in i ListGraph-klassen.
@@ -310,7 +321,7 @@ public class Gui extends Application {
 
           center.getChildren().add(line);
 
-          //Den dolda koden är för att rita ut en linje men jag pausar det arbetet för stunden.
+          //Den dolda koden är för att rita ut en linje men jag pausar det arbetet för stunden då det kanske inte behövs.
 
 
            */
@@ -325,6 +336,77 @@ public class Gui extends Application {
     }
 
   }
+
+  class FindPathHandler implements EventHandler<MouseEvent> {
+
+    private Location location;
+
+    public FindPathHandler(Location location) {
+      this.location = location;
+    }
+
+    @Override
+    public void handle(MouseEvent event) {
+
+      if (pathStart == null) {
+        pathStart = location;
+        return;
+      }
+
+      if (pathEnd == null && location != pathStart) {
+        pathEnd = location;
+
+        FindPathForm findPathForm = new FindPathForm();
+
+        findPathForm.showAndWait().ifPresent(choice -> {
+
+          //Fram till hit är den rätt lik Connection-metoden den behöver att vi trycker på två olika location. Sen startas
+          //FintPathForm upp och vi får välja DFS eller BFS se nedan:
+
+
+          PathFinder<Location> pathFinder;
+
+          if (choice.equals("DFS")) {
+            pathFinder = new DFSPathFinder<>();
+
+          } else {
+            pathFinder = new BFSPathFinder<>();
+          }
+
+          Path<Location> path =
+                  pathFinder.findPath(graph,pathStart,pathEnd);
+
+          // Antingen ett objekt av DFS eller BFS skapas, utifrån klasserna som heter så, klasserna som objekten tillhör
+          //har sedan metoden .findPath som vi sedan använder för att hitta en väg genom att vi kör metoden på objekten.
+          // Vad vi får är en Path utifrån ListPath som vi sedan kan skriva ut nedan. Allt det här är egentligen "backend-logik" vi
+          //höll på med det tidigare men använder det här.
+
+          showPathResult(path);
+
+        });
+
+        pathStart = null;
+        pathEnd = null;
+        findPathMode = false;
+
+      }
+    }
+  }
+
+  private void showPathResult(Path<Location> path){
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setHeaderText(null);
+
+    if (path ==null){
+      alert.setContentText("Det finns ingen väg mellan platserna");
+    } else {
+        alert.setContentText(path.toString());
+    }
+
+    alert.showAndWait();
+  }
+
+// Det här är rutan som skriver ut pathen, den kan utvecklas.
 
   private class DeleteButtonHandler implements EventHandler<ActionEvent>{
     @Override
@@ -347,7 +429,16 @@ public class Gui extends Application {
   }
   //Den här är samma som metoden över fast för att connecta platser. De påverkar saker i Clickhandler.
 
+  private class FindPathButtonHandler implements EventHandler<ActionEvent>{
+    @Override
+    public void handle(ActionEvent event){
+      findPathMode = true;
+      pathStart = null;
+      pathEnd = null;
+    }
+  }
 
+// Samma princip igen, en variabel som styr vad ett musklick ska reagera på skapas.
 
   public static void main (String[]args){
         launch(args);
