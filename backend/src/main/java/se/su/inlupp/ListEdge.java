@@ -41,7 +41,7 @@ public class ListEdge<T> implements Edge<T> {
     
     @Override
     public String toString(){
-    	return "Vikten för edgen " + name + " till " + destination + " är " + weight;
+    	return "till " + destination + " med " + name + " tar " + weight;
     	
     	//ska ha en meningsfull toString-metod
     }
