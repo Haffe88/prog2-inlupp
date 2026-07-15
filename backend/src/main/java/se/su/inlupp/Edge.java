@@ -11,8 +11,7 @@ public interface Edge<T> {
 	
 	String getName();
 	
-	public String toString();
-	//ska ha en meningsfull toString-metod
+	//Tog bort tom toString-metod eftersom alla som ärver av Object redan har den
 }
 
-//Kant i grafen
+//Kant i grafen - det ska vara två stycken kanter mellan två noder för att vara dubbelriktad?

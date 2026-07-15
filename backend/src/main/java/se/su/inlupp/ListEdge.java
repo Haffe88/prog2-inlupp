@@ -1,5 +1,6 @@
 package se.su.inlupp;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class ListEdge<T> implements Edge<T> {
@@ -40,11 +41,28 @@ public class ListEdge<T> implements Edge<T> {
     
     @Override
     public String toString(){
-    	return "till " + destination + " med " + name + " tar " + weight;
+    	return "Vikten för edgen " + name + " till " + destination + " är " + weight;
     	
     	//ska ha en meningsfull toString-metod
     }
-    
-    
+
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof ListEdge<?>){
+            ListEdge<?> other = (ListEdge<?>) o;
+            //castar Object o till en ListEdge<> som heter other
+            // ? - okänd typ, då vi inte vet typen på den andra kanten
+            return name.equals(other.name) && weight == other.weight && destination.equals(other.destination);
+        }else{
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(name, weight, destination);
+    }
 
 }
+
+//Jag la in equals och hashcode här - eftersom vi använder hashset i listgraph-klassen (behöver kunna sortera)

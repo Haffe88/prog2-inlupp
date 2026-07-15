@@ -70,10 +70,10 @@ public class ListPath<T> implements Path<T> {
 	@Override
 	public String toString() {
 
-    return "From" + getStart() +
-    ", To:" + getEnd() +
-    ", Path:" + edges +
-    ", Total weight: " + getTotalWeight();
+    return "Från" + getStart() +
+    ", Till:" + getEnd() +
+    ", Edges:" + edges +
+    ", Total vikt: " + getTotalWeight();
 		
 	}
 
