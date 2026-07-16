@@ -247,7 +247,9 @@ public class Gui extends Application {
       if (pictureToLoad != null){
         Image image = new Image(pictureToLoad.toURI().toString());
         backgroundMapView.setImage(image);
+        hasChanges = true;
       }
+      //Förändringar har utförts i programmet - när vi laddat in bild
     }
   }
 
@@ -265,7 +267,8 @@ public class Gui extends Application {
     }
   }
 
-  //Började försöka fixa popupfönster till addLocation-knappen men fastnade
+  //addLocation-knappen trycks på _ nytt formulär skapas, väntar på att användaren skriver in ett namn på location i formuläret och trycker ok, då skapas en Click-Handler, namn skickas med som argument
+  //ClickHandler körs nästa gång användaren klickar på center (positionen i center används för att placera location)
 
 
   class ClickHandler implements EventHandler<MouseEvent>{
@@ -297,6 +300,8 @@ public class Gui extends Application {
 
             graph.add(location);                                        //Denna gör att location läggs in i ListGraph-klassen.
             center.getChildren().add(location);
+            hasChanges = true;
+            //lägger till location - programmet har ändrats
 
             center.setOnMouseClicked(null);
           }
@@ -333,6 +338,8 @@ public class Gui extends Application {
 
           graph.remove(location);
           center.getChildren().remove(location);
+          hasChanges = true;
+          //tar bort location (samt dess linjer) - programmet har förändrats
           removeMode = false;
       }
       });
@@ -374,9 +381,15 @@ public class Gui extends Application {
         // sånt som getConnectionName(). Det går att skapa ett nytt objekt för det vi behöver också men då behöver vi en ny klass.
 
          ConnectionLine line =
-                 new ConnectionLine(firstSelected, secondSelected);
+                 new ConnectionLine(connectLocationForm.getConnectionName(), connectLocationForm.getConnectionLength(), firstSelected, secondSelected);
          center.getChildren().add(line);
+         center.getChildren().add(line.getLabel());
+         //nu läggs även label till linjen till på center
+
          connectionLines.add(line);
+
+         hasChanges = true;
+         //connection skapas mellan två locations - förändring har skett i programmet
 
          //Här skapas linjen och så lägger vi till den till center. Den använder samma de två locations för att göra det.
          // linjen läggs även till i en lista så att vi ska kunna plocka bort den om noden tas bort.

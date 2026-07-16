@@ -1,5 +1,6 @@
 package se.su.inlupp;
 
+import javafx.scene.control.Label;
 import javafx.scene.shape.Line;
 
 public class ConnectionLine extends Line {
@@ -8,10 +9,20 @@ public class ConnectionLine extends Line {
 
     private final Location from;
     private final Location to;
+    private String name;
+    private int length;
+    private Label lineLabel = new Label();
 
-    public ConnectionLine(Location from, Location to){
+    public ConnectionLine(String name, int length, Location from, Location to){
         this.from = from;
         this.to = to;
+        this.name = name;
+        this.length = length;
+
+        lineLabel.setText(name + " (" + length + ")");
+        //sätter label med namn och vikt för linjen
+        //Nu tar konstruktorn även in namn och vikt för linjen
+
 
         update();
 
@@ -34,6 +45,18 @@ public class ConnectionLine extends Line {
         setEndX(to.getLayoutX());
         setEndY(to.getLayoutY());
 
+        double midX = (getStartX() + getEndX()) /2;
+        double midY = (getStartY() + getEndY()) /2;
+        //Hittar mitten av linjen (x och y) via getStart och end)
+
+        lineLabel.setLayoutX(midX);
+        lineLabel.setLayoutY(midY);
+        //gör att labeln flyttas med linjen när linjen flyttas i layouten
+
+    }
+
+    public Label getLabel(){
+        return lineLabel;
     }
 
   // Notera att getLayoutX() också är den metod vi använder i DragHandler i Location. Det där som heter
