@@ -22,7 +22,7 @@ public class Location extends StackPane {
         this.x = x;
         this.y = y;
 
-        relocate(x, y);
+        relocate(x, y);    //"Placera mig på koordinaterna (x,y) relativt min förälder". Skapar layoutX/layoutY, är det avgörande för platsen inte private double x och y.
 
         Circle locationSymbol = new Circle(7);
         locationSymbol.setFill(Color.WHITE);
@@ -58,6 +58,8 @@ public class Location extends StackPane {
         }
     }
 
+    //StartDragHandler - tar reda på var Location befann sig från början (var vi klickar på den), se instansvariabler - för tillgång i DragHandler
+
     @Override
     public String toString(){
         return name;
@@ -67,7 +69,7 @@ public class Location extends StackPane {
 
 
 
-    //StartDragHandler - tar reda på var Location befann sig från början (var vi klickar på den), se instansvariabler - för tillgång i DragHandler
+
 
 
     class DragHandler implements EventHandler<MouseEvent>{

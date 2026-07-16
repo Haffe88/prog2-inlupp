@@ -15,6 +15,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.io.*;
 import java.util.Optional;
@@ -42,6 +44,9 @@ public class Gui extends Application {
 
   private Boolean hasChanges = false;
   //boolsk flagga för att se om programmet har ändrats eller ej (används i meny-alterantiven sen)
+
+  private final List<ConnectionLine> connectionLines = new ArrayList<>();
+  // Lista med linjer för att vi ska kunna ta bort dem när en location försvinner.
 
   private Graph<Location> graph = new ListGraph<>();
 
@@ -226,9 +231,7 @@ public class Gui extends Application {
           event.consume();
         }
       }
-
     }
-
   }
   //Hanterare för när man försöker stänga fönstret utan att spara (varningsdialogruta för osparade ändringar)
   //Ta reda på vilken knapp som trycks på med showAndWait(), hittar button-typen som tryckdes på
@@ -316,6 +319,18 @@ public class Gui extends Application {
       DeleteLocationForm deleteLocationForm = new DeleteLocationForm(location);
       deleteLocationForm.showAndWait().ifPresent(result -> {
         if (result){
+
+          connectionLines.removeIf(line -> {
+            if (line.connects(location)){
+              center.getChildren().remove(line);
+              return true;
+            }
+            return false;
+          });
+
+          //Det här är en metod som går igenom listan men linjer och kollar på linjerna om den plats vi vill ta bort
+          //finns på dem, i så fall tas linjen bort också.
+
           graph.remove(location);
           center.getChildren().remove(location);
           removeMode = false;
@@ -358,21 +373,15 @@ public class Gui extends Application {
         // En metod kan inte returnera två stängar så det är lite svårare än tex NewLocationForm. Här hämtar vi instasvariablerna från klassen i stället, med
         // sånt som getConnectionName(). Det går att skapa ett nytt objekt för det vi behöver också men då behöver vi en ny klass.
 
-          /*
+         ConnectionLine line =
+                 new ConnectionLine(firstSelected, secondSelected);
+         center.getChildren().add(line);
+         connectionLines.add(line);
 
-          Line line = new Line(
-                  firstSelected.getLayoutX(),
-                  firstSelected.getLayoutY(),
-                  secondSelected.getLayoutX(),
-                  secondSelected.getLayoutY()
-          );
-
-          center.getChildren().add(line);
-
-          //Den dolda koden är för att rita ut en linje men jag pausar det arbetet för stunden då det kanske inte behövs.
+         //Här skapas linjen och så lägger vi till den till center. Den använder samma de två locations för att göra det.
+         // linjen läggs även till i en lista så att vi ska kunna plocka bort den om noden tas bort.
 
 
-           */
         });
       firstSelected = null;
       secondSelected = null;
@@ -380,9 +389,7 @@ public class Gui extends Application {
       }
 
       //allt måste nollställas så att vi kan lägga till fler kopplingar.
-
     }
-
   }
 
   class FindPathHandler implements EventHandler<MouseEvent> {
