@@ -373,7 +373,14 @@ public class Gui extends Application {
         ConnectLocationForm connectLocationForm = new ConnectLocationForm();      //skapar ett objekt av klassen och väntar sedan på resultat.
         connectLocationForm.showAndWait().ifPresent(result -> {
 
-          graph.connect(firstSelected,secondSelected,connectLocationForm.getConnectionName(), connectLocationForm.getConnectionLength()   // .connect ligger i ListGraph
+
+        try {
+
+          graph.connect(
+                  firstSelected,
+                  secondSelected,
+                  connectLocationForm.getConnectionName(),
+                  connectLocationForm.getConnectionLength()   // .connect ligger i ListGraph
 
           );
 
@@ -381,7 +388,12 @@ public class Gui extends Application {
         // sånt som getConnectionName(). Det går att skapa ett nytt objekt för det vi behöver också men då behöver vi en ny klass.
 
          ConnectionLine line =
-                 new ConnectionLine(connectLocationForm.getConnectionName(), connectLocationForm.getConnectionLength(), firstSelected, secondSelected);
+                 new ConnectionLine(
+                         connectLocationForm.getConnectionName(),
+                         connectLocationForm.getConnectionLength(),
+                         firstSelected,
+                         secondSelected);
+
          center.getChildren().add(line);
          center.getChildren().add(line.getLabel());
          //nu läggs även label till linjen till på center
@@ -395,15 +407,31 @@ public class Gui extends Application {
          // linjen läggs även till i en lista så att vi ska kunna plocka bort den om noden tas bort.
 
 
+        } catch (IllegalStateException e ) {
+          showError ("Det finns redan en väg mellan platserna");
+        }
         });
+
       firstSelected = null;
       secondSelected = null;
       connectMode = false;
-      }
 
+      }
       //allt måste nollställas så att vi kan lägga till fler kopplingar.
     }
   }
+
+  private void showError (String message) {
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle("fel");
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
+
+  }
+
+
+
 
   class FindPathHandler implements EventHandler<MouseEvent> {
 

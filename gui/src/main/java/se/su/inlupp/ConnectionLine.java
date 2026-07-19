@@ -71,6 +71,4 @@ public class ConnectionLine extends Line {
     // metoden används när platser tas bort och då går man igenom listan med linjer och ser om någon av dem har den location
     // som plockas bort på sig. Det görs i DeleteLocationHandler.
 
-
-
 }
