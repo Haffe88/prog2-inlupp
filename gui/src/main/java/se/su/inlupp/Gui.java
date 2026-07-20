@@ -28,6 +28,9 @@ public class Gui extends Application {
   private Stage stage;
   private FileChooser fileChooser = new FileChooser();
   private ImageView backgroundMapView;
+  private String imagePath;
+  //instansvariabel för filsökvägen
+
   private Pane center;
   private boolean removeMode = false;
   private boolean connectMode = false;
@@ -46,7 +49,7 @@ public class Gui extends Application {
   //boolsk flagga för att se om programmet har ändrats eller ej (används i meny-alterantiven sen)
 
   private final List<ConnectionLine> connectionLines = new ArrayList<>();
-  // Lista med linjer för att vi ska kunna ta bort dem när en location försvinner.
+  // Lista med linjer för att vi ska kunna ta bort dem när en location försvinner, samt för att kunna spara i filesavehandler
 
   private Graph<Location> graph = new ListGraph<>();
 
@@ -180,10 +183,40 @@ public class Gui extends Application {
   private class SaveFileHandler implements EventHandler<ActionEvent> {
     @Override
     public void handle(ActionEvent arg0) {
-      File fileToSave = fileChooser.showOpenDialog(stage);
+      File fileToSave = fileChooser.showSaveDialog(stage);
       try {
         FileWriter fileWriter = new FileWriter(fileToSave);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+
+        bufferedWriter.write("Locations: ");
+        bufferedWriter.newLine();
+
+        for (Location l : graph.getNodes() ){
+          bufferedWriter.write(l.getName() + ","  + l.getLayoutX() + "," + l.getLayoutY());
+          bufferedWriter.newLine();
+        }
+        //Locations sparas (namn, position)
+        //Går igenom alla locations i listgraph graph och hämtar namn och position för varje, en för varje rad
+
+
+        bufferedWriter.write("Paths/edges: ");
+        bufferedWriter.newLine();
+
+
+        bufferedWriter.newLine();
+
+        //Connection-lines sparas(namn, längd, label, location from, location to)
+
+        if(backgroundMapView.getImage() != null){
+          bufferedWriter.write("Background:");
+          bufferedWriter.newLine();
+          bufferedWriter.write(imagePath);
+        }
+        bufferedWriter.newLine();
+
+        //Bakgrundsbildens url sparas
+
         //Tänker att filen kan sparas som en CSV samt med filsökvägen/filnamnet till bilden som användaren laddade in i programmet
         // (comma separated file, eftersom vi inte får sparas om binärfil) där varje objekt (med nod,nodnamn, edges med namn och vikt - komma, mellan varje) sparas i en arraylist??, och hur ska det läsas in i programmet?
         // bufferedReader.close();
@@ -247,9 +280,16 @@ public class Gui extends Application {
       if (pictureToLoad != null){
         Image image = new Image(pictureToLoad.toURI().toString());
         backgroundMapView.setImage(image);
+
+        imagePath = pictureToLoad.getAbsolutePath();
+        //sparar filsökvägen, så den kan sparas sen i savefilehandler
+
         hasChanges = true;
       }
       //Förändringar har utförts i programmet - när vi laddat in bild
+
+
+
     }
   }
 
@@ -328,6 +368,8 @@ public class Gui extends Application {
           connectionLines.removeIf(line -> {
             if (line.connects(location)){
               center.getChildren().remove(line);
+              center.getChildren().remove(line.getLabel());
+              //ta bort label på line
               return true;
             }
             return false;
