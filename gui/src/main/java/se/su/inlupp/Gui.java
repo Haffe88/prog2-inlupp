@@ -10,26 +10,23 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.io.*;
 import java.util.Optional;
 
 public class Gui extends Application {
-
-  //Julia testkommentar
 
   private Stage stage;
   private FileChooser fileChooser = new FileChooser();
   private ImageView backgroundMapView;
   private String imagePath;
   //instansvariabel för filsökvägen
+
 
   private Pane center;
   private boolean removeMode = false;
@@ -51,7 +48,12 @@ public class Gui extends Application {
   private final List<ConnectionLine> connectionLines = new ArrayList<>();
   // Lista med linjer för att vi ska kunna ta bort dem när en location försvinner, samt för att kunna spara i filesavehandler
 
-  private Graph<Location> graph = new ListGraph<>();
+
+
+  private Model mapModel = new Model();
+//Ny modell skapas(ny ListGraph med Locations i)
+
+
 
   public void start(Stage stage) {
     this.stage = stage;
@@ -192,7 +194,7 @@ public class Gui extends Application {
         bufferedWriter.write("Locations: ");
         bufferedWriter.newLine();
 
-        for (Location l : graph.getNodes() ){
+        for (Location l : mapModel.getLocations() ){
           bufferedWriter.write(l.getName() + ","  + l.getLayoutX() + "," + l.getLayoutY());
           bufferedWriter.newLine();
         }
@@ -338,7 +340,7 @@ public class Gui extends Application {
               }                                                     //styr vad som händer vid musklicken på platsen.
                     });
 
-            graph.add(location);                                        //Denna gör att location läggs in i ListGraph-klassen.
+            mapModel.addLocation(location);                                        //Denna gör att location läggs in i ListGraph-klassen.
             center.getChildren().add(location);
             hasChanges = true;
             //lägger till location - programmet har ändrats
@@ -378,7 +380,7 @@ public class Gui extends Application {
           //Det här är en metod som går igenom listan men linjer och kollar på linjerna om den plats vi vill ta bort
           //finns på dem, i så fall tas linjen bort också.
 
-          graph.remove(location);
+          mapModel.removeLocation(location);
           center.getChildren().remove(location);
           hasChanges = true;
           //tar bort location (samt dess linjer) - programmet har förändrats
@@ -418,7 +420,7 @@ public class Gui extends Application {
 
         try {
 
-          graph.connect(
+          mapModel.connectLocations(
                   firstSelected,
                   secondSelected,
                   connectLocationForm.getConnectionName(),
@@ -512,8 +514,9 @@ public class Gui extends Application {
           }
 
           Path<Location> path =
-                  pathFinder.findPath(graph,pathStart,pathEnd);
+                  mapModel.findPath(pathStart,pathEnd, pathFinder);
 
+          // anropar metoden i model-klassen, som delegerar och utifrån vilken pathFinder (BFS/DFS) som skickas med så körs just den pathFindern
           // Antingen ett objekt av DFS eller BFS skapas, utifrån klasserna som heter så, klasserna som objekten tillhör
           //har sedan metoden .findPath som vi sedan använder för att hitta en väg genom att vi kör metoden på objekten.
           // Vad vi får är en Path utifrån ListPath som vi sedan kan skriva ut nedan. Allt det här är egentligen "backend-logik" vi

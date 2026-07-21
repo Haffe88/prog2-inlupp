@@ -24,6 +24,8 @@ public class ConnectionLine extends Line {
         //Nu tar konstruktorn även in namn och vikt för linjen
 
 
+
+
         update();
 
         from.layoutXProperty().addListener((obs, oldValue, newValue) -> update());
