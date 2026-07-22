@@ -1,5 +1,6 @@
 package se.su.inlupp;
 
+import java.util.Collection;
 import java.util.Set;
 import se.su.inlupp.Graph;
 import se.su.inlupp.ListGraph;
@@ -32,6 +33,10 @@ public class Model {
     //kolla om denna faktiskt behövs då den inte används någonstans än
 
     //Ovan är ListGraph-metoder för att skapa graf, ta bort och lägga till i grafen
+
+    public Collection<Edge<Location>> getEdgesFrom(Location location) {
+        return graph.getEdgesFrom(location);
+    }
 
     public Path<Location> findPath(Location from, Location to, PathFinder<Location> pathFinder){
         return pathFinder.findPath(graph, from, to);

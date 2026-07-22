@@ -69,6 +69,9 @@ public class Gui extends Application {
     root.setAlignment(Pos.CENTER);
 
     */
+
+    //Gammal kod från när filen öppnades (används ej)
+
     BorderPane root = new BorderPane();
 
     //Skapa borderpane
@@ -185,7 +188,7 @@ public class Gui extends Application {
             backgroundMapView.setImage(image);
 
 
-          } else {                                                // "else" för stunden är platserna för det är det som finns utöver bakgrunden. Så det är
+          } else{                                                // "else" för stunden är platserna för det är det som finns utöver bakgrunden. Så det är
                                                                   // vad den kommer titta på och fixa här.
 
             String[] split = line.split(",");             //Split så det blir variabler på allt mellan "," sedan nedanför sparas det i varabler.
@@ -243,10 +246,20 @@ public class Gui extends Application {
         //Går igenom alla locations i listgraph graph och hämtar namn och position för varje, en för varje rad
 
 
-        // bufferedWriter.write("Paths/edges: ");   bortkommenterat tillfälligt.
-        // bufferedWriter.newLine();
+        bufferedWriter.write("Paths/edges: ");   //bortkommenterat tillfälligt.
+        bufferedWriter.newLine();
 
-        //Connection-lines sparas(namn, längd, label, location from, location to)
+        for (Location from : mapModel.getLocations()){
+          for (Edge<Location> edge : mapModel.getEdgesFrom(from)){
+
+            Location to = edge.getDestination();
+            bufferedWriter.write(from.getName() + "," + to.getName() + "," + edge.getName() + "," + edge.getWeight());
+
+            bufferedWriter.newLine();
+          }
+        }
+        //Connection-lines sparas(namnet på location from, location to, namn på edgen, vikten/längden)
+
 
         if(backgroundMapView.getImage() != null){
           bufferedWriter.write("Background:");
@@ -254,7 +267,6 @@ public class Gui extends Application {
           bufferedWriter.write(imagePath);
           bufferedWriter.newLine();
         }
-
 
         //Bakgrundsbildens url sparas
 
@@ -282,6 +294,7 @@ public class Gui extends Application {
 
   private class ExitHandler implements EventHandler<ActionEvent>{
   public void handle(ActionEvent event){
+
     if(hasChanges){
       Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
       alert.setContentText("Du har osparade ändringar i programmet. Är du säker på att du vill avsluta?");
