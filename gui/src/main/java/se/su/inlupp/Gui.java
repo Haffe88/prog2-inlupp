@@ -153,24 +153,60 @@ public class Gui extends Application {
   }
 
   private class OpenFileHandler implements EventHandler<ActionEvent> {
+
     @Override
     public void handle(ActionEvent arg0) {
       fileChooser.setInitialDirectory(new File("."));
       File fileToOpen = fileChooser.showOpenDialog(stage);
+
+      if (fileToOpen == null){                // Om användaren trycker på avbryt.
+        return;
+      }
+
       try{
         FileReader fileReader = new FileReader(fileToOpen);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
+
         //Tänker att filen kan läsas från som en CSV samt med filsökvägen/filnamnet till bilden som användaren laddade in i programmet
         // (comma separated file, eftersom vi inte får sparas om binärfil) där varje objekt (med nod,nodnamn, edges med namn och vikt - komma, mellan varje) sparas i en arraylist??, och hur ska det läsas in i programmet?
         //bufferedReader.close();
+
+        String line = bufferedReader.readLine();
+
+        while ((line = bufferedReader.readLine()) != null){
+
+          if (line.equals("Background:")){                                //Den första rubriken avgör hur inläsningen görs. För bakground fixar den bakgrunden.
+            imagePath = bufferedReader.readLine();
+
+            File imageFile = new File(imagePath);
+            Image image =
+                    new Image(imageFile.toURI().toString());
+
+            backgroundMapView.setImage(image);
+
+
+          } else {                                                // "else" för stunden är platserna för det är det som finns utöver bakgrunden. Så det är
+                                                                  // vad den kommer titta på och fixa här.
+
+            String[] split = line.split(",");             //Split så det blir variabler på allt mellan "," sedan nedanför sparas det i varabler.
+
+            String name = split[0];
+            double x = Double.parseDouble(split[1]);
+            double y = Double.parseDouble(split[2]);
+
+            createLocation(name, x, y); //Här skickar vi det som behövs för att skapa en location till metoden createLocation
+
+          }
+
+        }
+        bufferedReader.close();
+        hasChanges = false;
+
 
       } catch (IOException e) {
         Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
         alert.showAndWait();
       }
-
-      hasChanges = false;
-
 
       //System.out.println(fileToOpen);
 
@@ -186,12 +222,17 @@ public class Gui extends Application {
     @Override
     public void handle(ActionEvent arg0) {
       File fileToSave = fileChooser.showSaveDialog(stage);
+
+      if (fileToSave == null){                      //Behövs för att användaren kan trycka på "avbryt"
+        return;
+      }
+
       try {
         FileWriter fileWriter = new FileWriter(fileToSave);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
 
-        bufferedWriter.write("Locations: ");
+        bufferedWriter.write("Locations:");
         bufferedWriter.newLine();
 
         for (Location l : mapModel.getLocations() ){
@@ -202,11 +243,8 @@ public class Gui extends Application {
         //Går igenom alla locations i listgraph graph och hämtar namn och position för varje, en för varje rad
 
 
-        bufferedWriter.write("Paths/edges: ");
-        bufferedWriter.newLine();
-
-
-        bufferedWriter.newLine();
+        // bufferedWriter.write("Paths/edges: ");   bortkommenterat tillfälligt.
+        // bufferedWriter.newLine();
 
         //Connection-lines sparas(namn, längd, label, location from, location to)
 
@@ -214,20 +252,25 @@ public class Gui extends Application {
           bufferedWriter.write("Background:");
           bufferedWriter.newLine();
           bufferedWriter.write(imagePath);
+          bufferedWriter.newLine();
         }
-        bufferedWriter.newLine();
+
 
         //Bakgrundsbildens url sparas
 
         //Tänker att filen kan sparas som en CSV samt med filsökvägen/filnamnet till bilden som användaren laddade in i programmet
         // (comma separated file, eftersom vi inte får sparas om binärfil) där varje objekt (med nod,nodnamn, edges med namn och vikt - komma, mellan varje) sparas i en arraylist??, och hur ska det läsas in i programmet?
         // bufferedReader.close();
-        //bufferedWriter.close();
+        bufferedWriter.close();
+
+        hasChanges = false;
+
+
       } catch (IOException e) {
         e.printStackTrace();
       }
 
-      hasChanges = false;
+
       // System.out.println(fileToSave);
     }
   }
@@ -300,58 +343,56 @@ public class Gui extends Application {
 
 
   private class AddLocationHandler implements EventHandler<ActionEvent> {
+
     @Override
     public void handle(ActionEvent event) {
       NewLocationForm newLocationform = new NewLocationForm();
+
       newLocationform.showAndWait().ifPresent(locationName -> {
-        center.setOnMouseClicked(new ClickHandler(locationName));
+
+        center.setOnMouseClicked(mouseEvent -> {
+          double x = mouseEvent.getX();                                               //mouseevent svarar mot MouseEvent och inte ActionEvent.
+          double y = mouseEvent.getY();
+
+          createLocation(locationName, x,y);
+
+          center.setOnMouseClicked(null);
+
+        });
       });
     }
   }
 
-  //addLocation-knappen trycks på _ nytt formulär skapas, väntar på att användaren skriver in ett namn på location i formuläret och trycker ok, då skapas en Click-Handler, namn skickas med som argument
-  //ClickHandler körs nästa gång användaren klickar på center (positionen i center används för att placera location)
+  // Jag har lagt till musklicken även i AddLocationhandler och så skickar den sen info till createLocation för att skapa en location.
 
 
-  class ClickHandler implements EventHandler<MouseEvent>{
 
-      private String locationName;
+  private void createLocation (String name, double x, double y){
 
-      public ClickHandler(String locationName) {
-        this.locationName = locationName;
+    Location location = new Location(name, x,y);
+
+    location.setOnMouseClicked(e -> {              //Här berättar jag för location att den ska reagera på musklick, men bara om
+      if (removeMode){                                        //removemode är sant, vilket sätts av ta bort knappen.
+        new DeleteLocationHandler(location).handle(e);
       }
+      if (connectMode){
+        new ConnectLocationHandler(location).handle(e);
+      }
+      if (findPathMode) {
+        new FindPathHandler(location).handle(e);            //Som du ser så är logiken likadan för de andra knapparna. Knapparna
+      }                                                     //styr vad som händer vid musklicken på platsen.
+    });
 
-        @Override
-          public void handle(MouseEvent event) {
-            double x = event.getX();
-            double y = event.getY();
+    mapModel.addLocation(location);                                        //Denna gör att location läggs in i ListGraph-klassen.
+    center.getChildren().add(location);
+    hasChanges = true;
+    //lägger till location - programmet har ändrats
 
-            Location location = new Location(locationName, x,y);      //Här skapas en location
-
-            location.setOnMouseClicked(e -> {              //Här berättar jag för location att den ska reagera på musklick, men bara om
-              if (removeMode){                                        //removemode är sant, vilket sätts av ta bort knappen.
-                new DeleteLocationHandler(location).handle(e);
-              }
-              if (connectMode){
-                new ConnectLocationHandler(location).handle(e);
-              }
-              if (findPathMode) {
-                new FindPathHandler(location).handle(e);            //Som du ser så är logiken likadan för de andra knapparna. Knapparna
-              }                                                     //styr vad som händer vid musklicken på platsen.
-                    });
-
-            mapModel.addLocation(location);                                        //Denna gör att location läggs in i ListGraph-klassen.
-            center.getChildren().add(location);
-            hasChanges = true;
-            //lägger till location - programmet har ändrats
-
-            center.setOnMouseClicked(null);
-          }
   }
-        // Denna eventhandler aktiveras bara om det finns ett namn från NewLocationForm, det är eventhandlern AddLocationHandler
-        // som styr den logiken. Aktiveras den så tar den namnet som skrivits in tillsammans med koordinaterna där vi tryckt och skapar en location. Location i sin
-        // tur placerar ut sig på kartan utifrån koordinaterna med cirkel och namn. Location läggs även till i ListGraph. Notera dock att den gör en massa mer sen, den berättar vad
-        // som händer om man trycker om en location om olika knappar har tryckts innan.
+
+// Det här är det som är kvar av Clickhandler men nu skapar den en location. Nu kan fler delar av programmet använda den för att skapa plats
+// Vi hamnar här både när vi skapar en plats själva samt öppnar en fil.
+
 
 
   class DeleteLocationHandler implements EventHandler<MouseEvent> {
