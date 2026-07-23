@@ -176,9 +176,20 @@ public class Gui extends Application {
 
         String line = bufferedReader.readLine();
 
+        boolean readingConnections = false;      // Då den läser en rad i taget så måste vi berätta för läsaren vart den ska läsa
+                                                 // Det kan vi göra genom denna variabel som påverkas av rubrikerna. Tidigare har alla rader
+                                                  // som inte är background varit location men nu är det inte så längre.
+
         while ((line = bufferedReader.readLine()) != null){
 
-          if (line.equals("Background:")){                                //Den första rubriken avgör hur inläsningen görs. För bakground fixar den bakgrunden.
+          if (line.equals("Path")){
+            readingConnections = true;
+
+          }
+
+          else if (line.equals("Background:")){
+            readingConnections = false;
+
             imagePath = bufferedReader.readLine();
 
             File imageFile = new File(imagePath);
@@ -186,10 +197,28 @@ public class Gui extends Application {
                     new Image(imageFile.toURI().toString());
 
             backgroundMapView.setImage(image);
+          }
 
+          else if (readingConnections){                  // Har plockas den informationen ut som behövs för att skapa en Connection
+            String[] split = line.split(",");      // I slutet kör den metoden creatConnection för att skapa en.
 
-          } else{                                                // "else" för stunden är platserna för det är det som finns utöver bakgrunden. Så det är
-                                                                  // vad den kommer titta på och fixa här.
+            String fromName = split[0];
+            String toName = split[1];
+            String connectionName = split[2];
+            int weight = Integer.parseInt(split[3]);
+
+            Location from = findLocation(fromName);
+            Location to = findLocation(toName);
+
+            createConnection(
+                    from,
+                    to,
+                    connectionName,
+                    weight
+              );
+            }
+
+          else {
 
             String[] split = line.split(",");             //Split så det blir variabler på allt mellan "," sedan nedanför sparas det i varabler.
 
@@ -210,9 +239,6 @@ public class Gui extends Application {
         Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
         alert.showAndWait();
       }
-
-      //System.out.println(fileToOpen);
-
     }
   }
 
@@ -246,16 +272,22 @@ public class Gui extends Application {
         //Går igenom alla locations i listgraph graph och hämtar namn och position för varje, en för varje rad
 
 
-        bufferedWriter.write("Paths/edges: ");   //bortkommenterat tillfälligt.
+        bufferedWriter.write("Path");
         bufferedWriter.newLine();
 
         for (Location from : mapModel.getLocations()){
           for (Edge<Location> edge : mapModel.getEdgesFrom(from)){
 
             Location to = edge.getDestination();
-            bufferedWriter.write(from.getName() + "," + to.getName() + "," + edge.getName() + "," + edge.getWeight());
 
-            bufferedWriter.newLine();
+            if (from.getName().compareTo(to.getName()) <0) {          // Den här behövs för att bara en riktning ska skrivas. En av rikningarna kommer alltid
+                                                                      // vara större än 0. Java jämför tecken utifrån deras Unicode-värden.
+
+              bufferedWriter.write(from.getName() + "," + to.getName() + "," + edge.getName() + "," + edge.getWeight());
+
+              bufferedWriter.newLine();
+
+            }
           }
         }
         //Connection-lines sparas(namnet på location from, location to, namn på edgen, vikten/längden)
@@ -291,6 +323,16 @@ public class Gui extends Application {
   //hasChanges - sätts till false, inga ändringar när vi sparar en fil
   //Kod från föreläsning F16, F7
 
+
+  private Location findLocation (String name){
+    for (Location location : mapModel.getLocations()){
+      if (location.getName().equals(name)){
+        return location;
+      }
+    }
+    return null;
+
+  }
 
   private class ExitHandler implements EventHandler<ActionEvent>{
   public void handle(ActionEvent event){
@@ -471,39 +513,17 @@ public class Gui extends Application {
         ConnectLocationForm connectLocationForm = new ConnectLocationForm();      //skapar ett objekt av klassen och väntar sedan på resultat.
         connectLocationForm.showAndWait().ifPresent(result -> {
 
-
         try {
 
-          mapModel.connectLocations(
+          createConnection(
                   firstSelected,
                   secondSelected,
                   connectLocationForm.getConnectionName(),
                   connectLocationForm.getConnectionLength()   // .connect ligger i ListGraph
-
           );
 
         // En metod kan inte returnera två stängar så det är lite svårare än tex NewLocationForm. Här hämtar vi instasvariablerna från klassen i stället, med
         // sånt som getConnectionName(). Det går att skapa ett nytt objekt för det vi behöver också men då behöver vi en ny klass.
-
-         ConnectionLine line =
-                 new ConnectionLine(
-                         connectLocationForm.getConnectionName(),
-                         connectLocationForm.getConnectionLength(),
-                         firstSelected,
-                         secondSelected);
-
-         center.getChildren().add(line);
-         center.getChildren().add(line.getLabel());
-         //nu läggs även label till linjen till på center
-
-         connectionLines.add(line);
-
-         hasChanges = true;
-         //connection skapas mellan två locations - förändring har skett i programmet
-
-         //Här skapas linjen och så lägger vi till den till center. Den använder samma de två locations för att göra det.
-         // linjen läggs även till i en lista så att vi ska kunna plocka bort den om noden tas bort.
-
 
         } catch (IllegalStateException e ) {
           showError ("Det finns redan en väg mellan platserna");
@@ -519,6 +539,29 @@ public class Gui extends Application {
     }
   }
 
+  private void createConnection(Location from, Location to, String connectionName, int weight
+  ){
+    mapModel.connectLocations(from,to, connectionName, weight);
+
+    // Här skickas det som behövs för att skapa en connection till Model. Hit kan man nu komma både från öppna och från klick och formvägen
+    // All den tidigare händelsehanteringen med klick och liknande ligger kvar i ConnectLocationHandler.
+
+    ConnectionLine line =
+            new ConnectionLine(connectionName, weight, from, to);
+
+    center.getChildren().add(line);
+    center.getChildren().add(line.getLabel());
+
+    connectionLines.add(line);
+
+    //Här skapas linjen och så lägger vi till den till center. Den använder samma de två locations för att göra det.
+    // linjen läggs även till i en lista så att vi ska kunna plocka bort den om noden tas bort.
+
+
+    hasChanges = true;
+  }
+
+
   private void showError (String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle("fel");
@@ -527,9 +570,6 @@ public class Gui extends Application {
     alert.showAndWait();
 
   }
-
-
-
 
   class FindPathHandler implements EventHandler<MouseEvent> {
 
