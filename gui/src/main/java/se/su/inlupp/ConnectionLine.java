@@ -2,6 +2,7 @@ package se.su.inlupp;
 
 import javafx.scene.control.Label;
 import javafx.scene.shape.Line;
+import javafx.scene.paint.Color;
 
 public class ConnectionLine extends Line {
 
@@ -72,5 +73,12 @@ public class ConnectionLine extends Line {
     // Den här metoden finns för att kunna svara på en om en viss location har en linje för då ska linjen plockas bort.
     // metoden används när platser tas bort och då går man igenom listan med linjer och ser om någon av dem har den location
     // som plockas bort på sig. Det görs i DeleteLocationHandler.
+
+    public void resetHighlight(){
+        setStroke(Color.BLACK);
+    }
+
+    //Metod för att återställa linjens färg (används i findPathButtonhandler så att den gamla markeringen försvinner)
+
 
 }

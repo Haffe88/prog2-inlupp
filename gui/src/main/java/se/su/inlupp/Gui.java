@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
 import java.util.Optional;
+import javafx.scene.paint.Color;
 
 public class Gui extends Application {
 
@@ -616,6 +617,12 @@ public class Gui extends Application {
           // Vad vi får är en Path utifrån ListPath som vi sedan kan skriva ut nedan. Allt det här är egentligen "backend-logik" vi
           //höll på med det tidigare men använder det här.
 
+          if (path != null){
+            highlightPath(path);
+          }
+
+          //om path finns så ska den highlightas
+
           showPathResult(path);
 
         });
@@ -628,6 +635,15 @@ public class Gui extends Application {
     }
   }
 
+  private void highlightPath(Path<Location>path){
+    for (ConnectionLine line : connectionLines){
+      line.setStroke(Color.GREEN);
+    }
+
+
+  }
+  //koden är inte rätt här ännu (alla linjer markeras gröna istället) - här ska alla collectionlines i path highlightas
+
   private void showPathResult(Path<Location> path){
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
     alert.setHeaderText(null);
@@ -635,7 +651,7 @@ public class Gui extends Application {
     if (path ==null){
       alert.setContentText("Det finns ingen väg mellan platserna");
     } else {
-        alert.setContentText(path.toString());
+        alert.setContentText(path.toString()); //Hämtar info från ListPath toString-metod(Från, Till, Kanter, total vikt)
     }
 
     alert.showAndWait();
@@ -667,6 +683,12 @@ public class Gui extends Application {
   private class FindPathButtonHandler implements EventHandler<ActionEvent>{
     @Override
     public void handle(ActionEvent event){
+
+      for (ConnectionLine line : connectionLines) {
+        line.resetHighlight();
+      }
+      //Färgen på linjen återställs när man trycker på knappen
+
       findPathMode = true;
       pathStart = null;
       pathEnd = null;
