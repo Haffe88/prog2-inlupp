@@ -24,9 +24,6 @@ public class ConnectionLine extends Line {
         //sätter label med namn och vikt för linjen
         //Nu tar konstruktorn även in namn och vikt för linjen
 
-
-
-
         update();
 
         from.layoutXProperty().addListener((obs, oldValue, newValue) -> update());
@@ -73,6 +70,12 @@ public class ConnectionLine extends Line {
     // Den här metoden finns för att kunna svara på en om en viss location har en linje för då ska linjen plockas bort.
     // metoden används när platser tas bort och då går man igenom listan med linjer och ser om någon av dem har den location
     // som plockas bort på sig. Det görs i DeleteLocationHandler.
+
+    public boolean connects(Location a, Location b){
+        return (from == a && to == b) ||
+                (from == b && to == a);
+    }
+
 
     public void resetHighlight(){
         setStroke(Color.BLACK);

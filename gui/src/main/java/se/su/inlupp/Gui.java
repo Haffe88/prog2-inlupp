@@ -636,11 +636,21 @@ public class Gui extends Application {
   }
 
   private void highlightPath(Path<Location>path){
-    for (ConnectionLine line : connectionLines){
-      line.setStroke(Color.GREEN);
+
+    List<Location> nodes = path.getNodes();
+
+    for (int i = 0; i < nodes.size() - 1; i++) {
+
+      Location from = nodes.get(i);
+      Location to = nodes.get(i +1);
+
+      for (ConnectionLine line : connectionLines){
+
+        if (line.connects(from,to)) {
+          line.setStroke(Color.GREEN);
+        }
+      }
     }
-
-
   }
   //koden är inte rätt här ännu (alla linjer markeras gröna istället) - här ska alla collectionlines i path highlightas
 
