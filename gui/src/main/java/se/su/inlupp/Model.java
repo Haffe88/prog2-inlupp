@@ -38,11 +38,21 @@ public class Model {
         return graph.getEdgesFrom(location);
     }
 
-    public Path<Location> findPath(Location from, Location to, PathFinder<Location> pathFinder){
+    public Path<Location> findPath(Location from, Location to, String choice){
+        PathFinder<Location> pathFinder;
+
+        if (choice.equals("DFS")) {
+            pathFinder = new DFSPathFinder<>();
+
+        } else {
+            pathFinder = new BFSPathFinder<>();
+        }
+
         return pathFinder.findPath(graph, from, to);
 
     }
-    //Kör metoden findPath() via att skicka med skicka med ett PathFinder-objekt (DFS/BFS), delegering
+    //Kör metoden findPath() via att skicka med skicka med strängen choice för att skapa ett PathFinder-objekt (DFS/BFS), delegering
+    //flyttade kod från gui för att skapa objektet- för att vi ska separera vyn från modellen.
 
     public Set<Location> getLocations() {
         return graph.getNodes();

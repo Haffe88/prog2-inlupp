@@ -599,19 +599,10 @@ public class Gui extends Application {
           //FintPathForm upp och vi får välja DFS eller BFS se nedan:
 
 
-          PathFinder<Location> pathFinder;
-
-          if (choice.equals("DFS")) {
-            pathFinder = new DFSPathFinder<>();
-
-          } else {
-            pathFinder = new BFSPathFinder<>();
-          }
-
           Path<Location> path =
-                  mapModel.findPath(pathStart,pathEnd, pathFinder);
+                  mapModel.findPath(pathStart,pathEnd, choice);
 
-          // anropar metoden i model-klassen, som delegerar och utifrån vilken pathFinder (BFS/DFS) som skickas med så körs just den pathFindern
+          // anropar metoden i model-klassen, som delegerar och utifrån vilken choice (BFS/DFS) som skickas med så körs just den pathFindern
           // Antingen ett objekt av DFS eller BFS skapas, utifrån klasserna som heter så, klasserna som objekten tillhör
           //har sedan metoden .findPath som vi sedan använder för att hitta en väg genom att vi kör metoden på objekten.
           // Vad vi får är en Path utifrån ListPath som vi sedan kan skriva ut nedan. Allt det här är egentligen "backend-logik" vi
@@ -695,7 +686,7 @@ public class Gui extends Application {
     public void handle(ActionEvent event){
 
       for (ConnectionLine line : connectionLines) {
-        line.resetHighlight();
+        line.removeHighlight();
       }
       //Färgen på linjen återställs när man trycker på knappen
 

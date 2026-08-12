@@ -77,7 +77,7 @@ public class ConnectionLine extends Line {
     }
 
 
-    public void resetHighlight(){
+    public void removeHighlight(){
         setStroke(Color.BLACK);
     }
 
