@@ -3,6 +3,9 @@ package se.su.inlupp;
 import java.util.*;
 
 public class BFSPathFinder<T> implements PathFinder<T> {
+
+	public BFSPathFinder(){
+	}
 	
 
   @Override

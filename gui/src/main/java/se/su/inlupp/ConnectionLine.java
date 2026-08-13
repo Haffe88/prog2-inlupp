@@ -59,9 +59,9 @@ public class ConnectionLine extends Line {
         return lineLabel;
     }
 
-  // Notera att getLayoutX() också är den metod vi använder i DragHandler i Location. Det där som heter
-  // exempelvis "SetStartX" är metoder från Line-klassen. Linjen skapas här och till update kommer man både vid
-  // skapandet av klassen samt från lyssnaren.
+    // Notera att getLayoutX() också är den metod vi använder i DragHandler i Location. Det där som heter
+    // exempelvis "SetStartX" är metoder från Line-klassen. Linjen skapas här och till update kommer man både vid
+    // skapandet av klassen samt från lyssnaren.
 
     public boolean connects (Location location) {
         return from == location || to == location;

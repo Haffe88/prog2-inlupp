@@ -173,8 +173,8 @@ public class Gui extends Application {
         String line = bufferedReader.readLine();
 
         boolean readingConnections = false;      // Då den läser en rad i taget så måste vi berätta för läsaren vart den ska läsa
-                                                 // Det kan vi göra genom denna variabel som påverkas av rubrikerna. Tidigare har alla rader
-                                                  // som inte är background varit location men nu är det inte så längre.
+        // Det kan vi göra genom denna variabel som påverkas av rubrikerna. Tidigare har alla rader
+        // som inte är background varit location men nu är det inte så längre.
 
         while ((line = bufferedReader.readLine()) != null){
 
@@ -211,8 +211,8 @@ public class Gui extends Application {
                     to,
                     connectionName,
                     weight
-              );
-            }
+            );
+          }
 
           else {
 
@@ -277,7 +277,7 @@ public class Gui extends Application {
             Location to = edge.getDestination();
 
             if (from.getName().compareTo(to.getName()) <0) {          // Den här behövs för att bara en riktning ska skrivas. En av rikningarna kommer alltid
-                                                                      // vara större än 0. Java jämför tecken utifrån deras Unicode-värden.
+              // vara större än 0. Java jämför tecken utifrån deras Unicode-värden.
 
               bufferedWriter.write(from.getName() + "," + to.getName() + "," + edge.getName() + "," + edge.getWeight());
 
@@ -331,18 +331,18 @@ public class Gui extends Application {
   }
 
   private class ExitHandler implements EventHandler<ActionEvent>{
-  public void handle(ActionEvent event){
+    public void handle(ActionEvent event){
 
-    if(hasChanges){
-      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-      alert.setContentText("Du har osparade ändringar i programmet. Är du säker på att du vill avsluta?");
-      Optional<ButtonType> clicked = alert.showAndWait();
-      if (clicked.isPresent() && clicked.get().equals(ButtonType.CANCEL)){
-        return;
+      if(hasChanges){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Du har osparade ändringar i programmet. Är du säker på att du vill avsluta?");
+        Optional<ButtonType> clicked = alert.showAndWait();
+        if (clicked.isPresent() && clicked.get().equals(ButtonType.CANCEL)){
+          return;
+        }
       }
+      stage.close();
     }
-    stage.close();
-  }
 
   }
   //Hanterare för när man väljer alternativet Avsluta i menyn (varningsdialogruta vid osparade ändringar)
@@ -477,7 +477,7 @@ public class Gui extends Application {
           hasChanges = true;
           //tar bort location (samt dess linjer) - programmet har förändrats
           removeMode = false;
-      }
+        }
       });
     }
   }
@@ -509,26 +509,26 @@ public class Gui extends Application {
         ConnectLocationForm connectLocationForm = new ConnectLocationForm();      //skapar ett objekt av klassen och väntar sedan på resultat.
         connectLocationForm.showAndWait().ifPresent(result -> {
 
-        try {
+          try {
 
-          createConnection(
-                  firstSelected,
-                  secondSelected,
-                  connectLocationForm.getConnectionName(),
-                  connectLocationForm.getConnectionLength()   // .connect ligger i ListGraph
-          );
+            createConnection(
+                    firstSelected,
+                    secondSelected,
+                    connectLocationForm.getConnectionName(),
+                    connectLocationForm.getConnectionLength()   // .connect ligger i ListGraph
+            );
 
-        // En metod kan inte returnera två stängar så det är lite svårare än tex NewLocationForm. Här hämtar vi instasvariablerna från klassen i stället, med
-        // sånt som getConnectionName(). Det går att skapa ett nytt objekt för det vi behöver också men då behöver vi en ny klass.
+            // En metod kan inte returnera två stängar så det är lite svårare än tex NewLocationForm. Här hämtar vi instasvariablerna från klassen i stället, med
+            // sånt som getConnectionName(). Det går att skapa ett nytt objekt för det vi behöver också men då behöver vi en ny klass.
 
-        } catch (IllegalStateException e ) {
-          showError ("Det finns redan en väg mellan platserna");
-        }
+          } catch (IllegalStateException e ) {
+            showError ("Det finns redan en väg mellan platserna");
+          }
         });
 
-      firstSelected = null;
-      secondSelected = null;
-      connectMode = false;
+        firstSelected = null;
+        secondSelected = null;
+        connectMode = false;
 
       }
       //allt måste nollställas så att vi kan lägga till fler kopplingar.
@@ -647,7 +647,7 @@ public class Gui extends Application {
     if (path ==null){
       alert.setContentText("Det finns ingen väg mellan platserna");
     } else {
-        alert.setContentText(path.toString()); //Hämtar info från ListPath toString-metod(Från, Till, Kanter, total vikt)
+      alert.setContentText(path.toString()); //Hämtar info från ListPath toString-metod(Från, Till, Kanter, total vikt)
     }
 
     alert.showAndWait();
@@ -695,6 +695,7 @@ public class Gui extends Application {
   //Sätter findPathMode till true när man trycker på knappen findPath
 
   public static void main (String[]args){
-        launch(args);
-      }
-    }
+    launch(args);
+  }
+
+}

@@ -8,6 +8,9 @@ public class ListGraph<T> implements Graph<T> {
 
   private final Map<T, Set<Edge<T>>> list = new HashMap<>();
 
+  public ListGraph(){
+  }
+
   @Override
   public void add(T node) {
 	  list.putIfAbsent(node, new HashSet<>());

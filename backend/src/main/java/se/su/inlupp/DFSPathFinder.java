@@ -4,6 +4,9 @@ import java.util.*;
 
 public class DFSPathFinder<T> implements PathFinder<T> {
 
+	public DFSPathFinder(){
+	}
+
   @Override
   public Path<T> findPath(Graph<T> graph, T from, T to) {
 	  
