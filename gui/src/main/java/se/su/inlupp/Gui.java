@@ -659,6 +659,12 @@ public class Gui extends Application {
     @Override
     public void handle(ActionEvent event) {
 
+      if (mapModel.getLocations().isEmpty()){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText("Det finns ingen plats att ta bort");
+        alert.showAndWait();
+      }
+
       removeMode = true;
     }
   }
@@ -671,6 +677,12 @@ public class Gui extends Application {
     @Override
     public void handle(ActionEvent event) {
 
+      if (mapModel.getLocations().size() < 2){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText("För att skapa en väg krävs två platser");
+        alert.showAndWait();
+      }
+
       connectMode = true;
     }
   }
@@ -679,6 +691,12 @@ public class Gui extends Application {
   private class FindPathButtonHandler implements EventHandler<ActionEvent>{
     @Override
     public void handle(ActionEvent event){
+
+      if (mapModel.getLocations().size() < 2){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText("Det finns ingen väg att hitta - minst två platser krävs");
+        alert.showAndWait();
+      }
 
       for (ConnectionLine line : connectionLines) {
         line.removeHighlight();
