@@ -81,8 +81,6 @@ public class Gui extends Application {
     Menu menu = new Menu("Meny");
     menuBar.getMenus().add(menu);
 
-    MenuItem newFile = new MenuItem("Ny");
-
     MenuItem openFile = new MenuItem("Öppna");
     openFile.setOnAction(new OpenFileHandler());
 
@@ -96,7 +94,7 @@ public class Gui extends Application {
     quit.setOnAction(new ExitHandler());
     //ExitHandler anropas även ifall vi väljer alternativet avsluta i menyn
 
-    menu.getItems().addAll(newFile, openFile, loadBackground, saveFile, quit);
+    menu.getItems().addAll(openFile, loadBackground, saveFile, quit);
 
     //Menyn med alternativen i menyn - samt setOnAction
 
@@ -112,10 +110,7 @@ public class Gui extends Application {
     Button findPath = new Button("Hitta väg");
     findPath.setOnAction (new FindPathButtonHandler());
 
-
     //Knappar i flowpane (bottom)
-
-
 
     VBox top = new VBox(0, menuBar);
     FlowPane bottom = new FlowPane(addLocation, removeLocation, connectLocations, findPath);

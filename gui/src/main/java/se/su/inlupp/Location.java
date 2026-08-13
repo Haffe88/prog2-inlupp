@@ -10,8 +10,6 @@ import javafx.geometry.Pos;
 
 public class Location extends StackPane {
     private String name;
-    private double x;
-    private double y;
 
     private double startX;
     private double startY;
@@ -19,8 +17,6 @@ public class Location extends StackPane {
 
     public Location(String name, double x, double y) {
         this.name = name;
-        this.x = x;
-        this.y = y;
 
         relocate(x, y);    //"Placera mig på koordinaterna (x,y) relativt min förälder". Skapar layoutX/layoutY, är det avgörande för platsen inte private double x och y.
 

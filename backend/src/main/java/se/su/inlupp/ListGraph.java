@@ -38,6 +38,12 @@ public class ListGraph<T> implements Graph<T> {
 		  throw new NoSuchElementException();
 	  }
 
+	  if (node1.equals(node2)) {
+		  throw new IllegalArgumentException();
+	  }
+	  // Så att inte en nod går att koppla till sig själv. Det grafiska gränsnsittet tillåter inte det men det är bra att det inte
+	  // tillåts här heller.
+
 	  if (weight < 0) {
 		  throw new IllegalArgumentException();
 	  }

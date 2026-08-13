@@ -1,8 +1,5 @@
 package se.su.inlupp;
 
-import java.util.Objects;
-import java.util.Set;
-
 public class ListEdge<T> implements Edge<T> {
 
     private String name;
@@ -46,6 +43,10 @@ public class ListEdge<T> implements Edge<T> {
     	//ska ha en meningsfull toString-metod
     }
 
+
+    // Det behövs ingen equals och hashCode-här då likhet undviks och kontrolleras på andra sätt.
+
+    /*
     @Override
     public boolean equals(Object o){
         if(o instanceof ListEdge<?>){
@@ -63,6 +64,7 @@ public class ListEdge<T> implements Edge<T> {
         return Objects.hash(name, weight, destination);
     }
 
+     */
 }
 
-//Jag la in equals och hashcode här - eftersom vi använder hashset i listgraph-klassen (behöver kunna sortera)
+
