@@ -22,7 +22,6 @@ public class Model {
                 throw new IllegalArgumentException();
             }
         }
-
         graph.add(location);
     }
 
@@ -49,7 +48,6 @@ public class Model {
         } else {
             pathFinder = new BFSPathFinder<>();
         }
-
         return pathFinder.findPath(graph, from, to);
 
     }
@@ -60,9 +58,5 @@ public class Model {
     }
     //Hämtar noder från ListGraph
 
-
-
 }
-
-
-//mellanhand för programmets data och logik i backend och gui som ska bara hantera gränssnitt och javafx-komponenter
+    //mellanhand för programmets data och logik i backend och gui som ska bara hantera gränssnitt och javafx-komponenter

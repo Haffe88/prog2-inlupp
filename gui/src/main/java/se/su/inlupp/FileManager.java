@@ -61,9 +61,7 @@ public class FileManager {
             }
 
             bufferedWriter.close();
-
     }
-
 
     public List <String> load (File file) throws IOException {
 

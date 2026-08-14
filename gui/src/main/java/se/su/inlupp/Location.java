@@ -13,6 +13,7 @@ public class Location extends StackPane {
 
     private double startX;
     private double startY;
+
 //Instansvariabler - för tillgång hos DragHandler
 
     public Location(String name, double x, double y) {
@@ -37,6 +38,7 @@ public class Location extends StackPane {
 
         setOnMousePressed(new StartDragHandler());
         //Metoden kopplar händelsehanterare till Location när man trycker på musen på den
+
         setOnMouseDragged(new DragHandler());
         //Metoden kopplar händelsehanterare till Location när man drar musen över den, förflyttar location
     }
@@ -63,20 +65,13 @@ public class Location extends StackPane {
 
     // Lagt till en ToString här så att det skrivs ut rätt när man ska hitta en väg.
 
-
-
-
-
-
     class DragHandler implements EventHandler<MouseEvent>{
 
         public void handle(MouseEvent mouseEvent){
             double newX = getLayoutX() + mouseEvent.getX() - startX;
             double newY = getLayoutY() + mouseEvent.getY() - startY;
             relocate(newX, newY);
-
         }
-
     }
 
     //Drag och StartHandler - baserade på föreläsningen F14 (låt denna kommentar stå kvar)

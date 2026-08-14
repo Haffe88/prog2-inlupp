@@ -7,7 +7,6 @@ public class BFSPathFinder<T> implements PathFinder<T> {
 	public BFSPathFinder(){
 	}
 
-
 	@Override
 	public Path<T> findPath(Graph<T> graph, T from, T to) {
 
@@ -50,6 +49,5 @@ public class BFSPathFinder<T> implements PathFinder<T> {
 
 	//Kod från föreläsning 10
 }
-
 
 //skall returnera en Path<T> som representerar den hittade vägen, eller null om ingen väg finns.

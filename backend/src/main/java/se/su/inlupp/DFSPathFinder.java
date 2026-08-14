@@ -19,7 +19,6 @@ public class DFSPathFinder<T> implements PathFinder<T> {
 		}
 		//om to inte finns (ingen väg finns) - returnera null
 
-
 		LinkedList<Edge<T>> path = new LinkedList<>();
 
 		T current = to;
@@ -59,6 +58,5 @@ public class DFSPathFinder<T> implements PathFinder<T> {
 		}
 	}
 }
-
 
 //skall returnera en Path<T> som representerar den hittade vägen, eller null om ingen väg finns.

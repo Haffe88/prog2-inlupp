@@ -28,7 +28,6 @@ public class Gui extends Application {
   private String imagePath;
   //instansvariabel för filsökvägen
 
-
   private Pane center;
   private boolean removeMode = false;
   private boolean connectMode = false;
@@ -40,7 +39,6 @@ public class Gui extends Application {
   private boolean findPathMode = false;
   private Location pathStart = null;
   private Location pathEnd = null;
-
   // De här är för att hitta en väg
 
   private boolean hasChanges = false;
@@ -58,7 +56,6 @@ public class Gui extends Application {
 
   public void start(Stage stage) {
     this.stage = stage;
-
 
     BorderPane root = new BorderPane();
 
@@ -102,7 +99,6 @@ public class Gui extends Application {
     VBox top = new VBox(0, menuBar);
     FlowPane bottom = new FlowPane(addLocation, removeLocation, connectLocations, findPath);
 
-
     backgroundMapView = new ImageView();
     center = new Pane();
     center.getChildren().add(backgroundMapView);
@@ -121,10 +117,8 @@ public class Gui extends Application {
 
     //Sätta delarna i Borderpanen, sätta alignment för knapparna i bottom, samt padding 10 runt varje knapp, 20 i gap mellan knappar
 
-
     stage.setOnCloseRequest(new WindowExitHandler());
     //om man försöker stänga fönstret innan man sparar - så anropas ExitHandler
-
 
     Scene scene = new Scene(root, 640, 480);
     stage.setScene(scene);
@@ -204,7 +198,7 @@ public class Gui extends Application {
 
           else {
 
-            String[] split = line.split(",");             //Split så det blir variabler på allt mellan "," sedan nedanför sparas det i varabler.
+            String[] split = line.split(",");    //Split så det blir variabler på allt mellan "," sedan nedanför sparas det i varabler.
 
             String name = split[0];
             double x = Double.parseDouble(split[1]);
@@ -316,9 +310,6 @@ public class Gui extends Application {
         hasChanges = true;
       }
       //Förändringar har utförts i programmet - när vi laddat in bild
-
-
-
     }
   }
 
@@ -334,7 +325,7 @@ public class Gui extends Application {
       newLocationForm.showAndWait().ifPresent(locationName -> {
 
         center.setOnMouseClicked(mouseEvent -> {
-          double x = mouseEvent.getX();                                               //mouseevent svarar mot MouseEvent och inte ActionEvent.
+          double x = mouseEvent.getX();                    //mouseevent svarar mot MouseEvent och inte ActionEvent.
           double y = mouseEvent.getY();
 
           try {
@@ -353,7 +344,6 @@ public class Gui extends Application {
   // Jag har lagt till musklicken även i AddLocationhandler och så skickar den sen info till createLocation för att skapa en location.
 
 
-
   private void createLocation (String name, double x, double y){
 
     Location location = new Location(name, x,y);
@@ -370,10 +360,11 @@ public class Gui extends Application {
       }                                                     //styr vad som händer vid musklicken på platsen.
     });
 
-      mapModel.addLocation(location);                                        //Denna gör att location läggs in i ListGraph-klassen.
+      mapModel.addLocation(location);                       //Denna gör att location läggs in i ListGraph-klassen.
       center.getChildren().add(location);
 
     hasChanges = true;
+
     //lägger till location - programmet har ändrats
 
   }
@@ -400,7 +391,9 @@ public class Gui extends Application {
             if (line.connects(location)){
               center.getChildren().remove(line);
               center.getChildren().remove(line.getLabel());
+
               //ta bort label på line
+
               return true;
             }
             return false;
@@ -440,7 +433,7 @@ public class Gui extends Application {
       if (secondSelected == null && location != firstSelected){
         secondSelected = location;
 
-        // Ovan påminner om memory-spelet när två kort man tryck på ska användas men denna är enklare. Vad denna eventhandler gör är att koppla ihop två platser.
+        // Ovan påminner om memory-spelet föreläsningen när två kort man tryck på ska användas men denna är enklare. Vad denna eventhandler gör är att koppla ihop två platser.
 
 
         ConnectLocationForm connectLocationForm = new ConnectLocationForm();      //skapar ett objekt av klassen och väntar sedan på resultat.
@@ -493,7 +486,6 @@ public class Gui extends Application {
 
     hasChanges = true;
   }
-
 
   private void showError (String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -657,7 +649,7 @@ public class Gui extends Application {
   }
 
 // Samma princip igen, en variabel som styr vad ett musklick ska reagera på skapas.
-  //Sätter findPathMode till true när man trycker på knappen findPath
+// Sätter findPathMode till true när man trycker på knappen findPath
 
   public static void main (String[]args){
     launch(args);

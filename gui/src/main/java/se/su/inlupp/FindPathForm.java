@@ -2,8 +2,6 @@ package se.su.inlupp;
 
 import javafx.scene.control.*;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 public class FindPathForm extends Dialog<String> {
@@ -22,7 +20,6 @@ public class FindPathForm extends Dialog<String> {
 
         getDialogPane().setContent(grid);
         getDialogPane().getButtonTypes().addAll(dfsType, bfsType);
-
 
         setResultConverter(button -> {
             if (button == dfsType) {

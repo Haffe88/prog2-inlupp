@@ -8,10 +8,7 @@ import javafx.scene.layout.GridPane;
 
 public class DeleteLocationForm extends Dialog<Boolean> {
 
-    private Location location;
-
     public DeleteLocationForm(Location location){
-        this.location = location;
 
         setTitle("Ändra location");
         setHeaderText(null);
@@ -25,7 +22,6 @@ public class DeleteLocationForm extends Dialog<Boolean> {
         getDialogPane().setContent(grid);
         getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, deleteType);
 
-
         setResultConverter(button->{
             if (button == deleteType) {
                 return true;
@@ -33,10 +29,6 @@ public class DeleteLocationForm extends Dialog<Boolean> {
             return null;
 
         });
-
-
     }
-
-
 
 }

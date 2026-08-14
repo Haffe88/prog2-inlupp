@@ -6,8 +6,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-
-
 public class NewLocationForm extends Dialog<String> {
 
     private TextField name = new TextField();
@@ -41,10 +39,8 @@ public class NewLocationForm extends Dialog<String> {
             return null;
 
         });
-
         // En andra förändring är att vi inte låter klassen skapa en location utan bara ett namn på en plats som vi sen
         // returnerar, för vi kan inte använda koordinater här på något bra sätt tror jag.
-
     }
 }
 

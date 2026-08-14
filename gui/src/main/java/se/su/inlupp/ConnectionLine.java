@@ -6,19 +6,13 @@ import javafx.scene.paint.Color;
 
 public class ConnectionLine extends Line {
 
-//Hade hellre döpt den till bara "Line" men den klassen finns redan i JavaFx.
-
     private final Location from;
     private final Location to;
-    private String name;
-    private int length;
     private Label lineLabel = new Label();
 
     public ConnectionLine(String name, int length, Location from, Location to){
         this.from = from;
         this.to = to;
-        this.name = name;
-        this.length = length;
 
         lineLabel.setText(name + " (" + length + ")");
         //sätter label med namn och vikt för linjen
@@ -31,7 +25,6 @@ public class ConnectionLine extends Line {
 
         to.layoutXProperty().addListener((obs, oldValue, newValue) -> update());
         to.layoutYProperty().addListener((obs, oldValue, newValue) -> update());
-
     }
 
     // De där "layoutXProperty" är metod från Node som hämtar en property från Location som kan se om den förändras.Sen lyssnar
@@ -52,7 +45,6 @@ public class ConnectionLine extends Line {
         lineLabel.setLayoutX(midX);
         lineLabel.setLayoutY(midY);
         //gör att labeln flyttas med linjen när linjen flyttas i layouten
-
     }
 
     public Label getLabel(){
@@ -76,12 +68,10 @@ public class ConnectionLine extends Line {
                 (from == b && to == a);
     }
 
-
     public void removeHighlight(){
         setStroke(Color.BLACK);
     }
 
     //Metod för att återställa linjens färg (används i findPathButtonhandler så att den gamla markeringen försvinner)
-
 
 }

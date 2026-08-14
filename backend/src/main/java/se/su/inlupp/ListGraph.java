@@ -79,7 +79,6 @@ public class ListGraph<T> implements Graph<T> {
 			throw new NoSuchElementException();
 		}
 
-
 		Edge<T> edge1 = getEdgeBetween(node1,node2); //Den anropar en metod längre ner.
 		Edge<T> edge2 = getEdgeBetween(node2,node1); //Behöver göra det på båda nod då kanten finns hos båda.
 
