@@ -16,6 +16,13 @@ public class Model {
     }
 
     public void addLocation(Location location){
+
+        for (Location existingLocation : graph.getNodes()){
+            if (existingLocation.getName().equalsIgnoreCase(location.getName())){
+                throw new IllegalArgumentException();
+            }
+        }
+
         graph.add(location);
     }
 

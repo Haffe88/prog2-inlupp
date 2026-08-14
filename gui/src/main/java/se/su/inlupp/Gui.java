@@ -49,29 +49,16 @@ public class Gui extends Application {
   private final List<ConnectionLine> connectionLines = new ArrayList<>();
   // Lista med linjer för att vi ska kunna ta bort dem när en location försvinner, samt för att kunna spara i filesavehandler
 
-
-
   private Model mapModel = new Model();
-//Ny modell skapas(ny ListGraph med Locations i)
+  //Ny modell skapas(ny ListGraph med Locations i)
 
+  private FileManager fileManager = new FileManager(mapModel);
+  // En FileManger för öppna och spara, den behöver mapModel så att vi använder samma graf.
 
 
   public void start(Stage stage) {
     this.stage = stage;
 
-   /*
-    Graph<String> graph = new ListGraph<String>();
-    String javaVersion = System.getProperty("java.version");
-    String javafxVersion = System.getProperty("javafx.version");
-    Label label =
-        new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-
-    VBox root = new VBox(30, label);
-    root.setAlignment(Pos.CENTER);
-
-    */
-
-    //Gammal kod från när filen öppnades (används ej)
 
     BorderPane root = new BorderPane();
 
@@ -163,20 +150,19 @@ public class Gui extends Application {
       }
 
       try{
-        FileReader fileReader = new FileReader(fileToOpen);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
+          List<String> lines = fileManager.load(fileToOpen);
 
-        //Tänker att filen kan läsas från som en CSV samt med filsökvägen/filnamnet till bilden som användaren laddade in i programmet
-        // (comma separated file, eftersom vi inte får sparas om binärfil) där varje objekt (med nod,nodnamn, edges med namn och vikt - komma, mellan varje) sparas i en arraylist??, och hur ska det läsas in i programmet?
-        //bufferedReader.close();
+        boolean readingConnections = false;
 
-        String line = bufferedReader.readLine();
-
-        boolean readingConnections = false;      // Då den läser en rad i taget så måste vi berätta för läsaren vart den ska läsa
+        // Då den läser en rad i taget så måste vi berätta för läsaren vart den ska läsa
         // Det kan vi göra genom denna variabel som påverkas av rubrikerna. Tidigare har alla rader
         // som inte är background varit location men nu är det inte så längre.
 
-        while ((line = bufferedReader.readLine()) != null){
+        for (int i = 1; i< lines.size(); i++){
+
+        // börjar på 1 eftersom första raden är "Locations".
+
+          String line = lines.get(i);
 
           if (line.equals("Path")){
             readingConnections = true;
@@ -186,7 +172,9 @@ public class Gui extends Application {
           else if (line.equals("Background:")){
             readingConnections = false;
 
-            imagePath = bufferedReader.readLine();
+            i++;
+
+            imagePath = lines.get(i);
 
             File imageFile = new File(imagePath);
             Image image =
@@ -227,7 +215,7 @@ public class Gui extends Application {
           }
 
         }
-        bufferedReader.close();
+
         hasChanges = false;
 
 
@@ -244,80 +232,25 @@ public class Gui extends Application {
   //Kod från föreläsning F16,F7
 
   private class SaveFileHandler implements EventHandler<ActionEvent> {
+
     @Override
     public void handle(ActionEvent arg0) {
+
       File fileToSave = fileChooser.showSaveDialog(stage);
 
-      if (fileToSave == null){                      //Behövs för att användaren kan trycka på "avbryt"
+      if (fileToSave == null) {                      //Behövs för att användaren kan trycka på "avbryt"
         return;
       }
-
       try {
-        FileWriter fileWriter = new FileWriter(fileToSave);
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-
-        bufferedWriter.write("Locations:");
-        bufferedWriter.newLine();
-
-        for (Location l : mapModel.getLocations() ){
-          bufferedWriter.write(l.getName() + ","  + l.getLayoutX() + "," + l.getLayoutY());
-          bufferedWriter.newLine();
-        }
-        //Locations sparas (namn, position)
-        //Går igenom alla locations i listgraph graph och hämtar namn och position för varje, en för varje rad
-
-
-        bufferedWriter.write("Path");
-        bufferedWriter.newLine();
-
-        for (Location from : mapModel.getLocations()){
-          for (Edge<Location> edge : mapModel.getEdgesFrom(from)){
-
-            Location to = edge.getDestination();
-
-            if (from.getName().compareTo(to.getName()) <0) {          // Den här behövs för att bara en riktning ska skrivas. En av rikningarna kommer alltid
-              // vara större än 0. Java jämför tecken utifrån deras Unicode-värden.
-
-              bufferedWriter.write(from.getName() + "," + to.getName() + "," + edge.getName() + "," + edge.getWeight());
-
-              bufferedWriter.newLine();
-
-            }
-          }
-        }
-        //Connection-lines sparas(namnet på location from, location to, namn på edgen, vikten/längden)
-
-
-        if(backgroundMapView.getImage() != null){
-          bufferedWriter.write("Background:");
-          bufferedWriter.newLine();
-          bufferedWriter.write(imagePath);
-          bufferedWriter.newLine();
-        }
-
-        //Bakgrundsbildens url sparas
-
-        //Tänker att filen kan sparas som en CSV samt med filsökvägen/filnamnet till bilden som användaren laddade in i programmet
-        // (comma separated file, eftersom vi inte får sparas om binärfil) där varje objekt (med nod,nodnamn, edges med namn och vikt - komma, mellan varje) sparas i en arraylist??, och hur ska det läsas in i programmet?
-        // bufferedReader.close();
-        bufferedWriter.close();
-
+        fileManager.save(fileToSave, imagePath);
         hasChanges = false;
-
 
       } catch (IOException e) {
         e.printStackTrace();
+
       }
-
-
-      // System.out.println(fileToSave);
     }
   }
-
-  //Hanterare för att spara en fil, , sätta in funktionalitet här så filen faktiskt kan öppnas
-  //hasChanges - sätts till false, inga ändringar när vi sparar en fil
-  //Kod från föreläsning F16, F7
 
 
   private Location findLocation (String name){
@@ -405,7 +338,11 @@ public class Gui extends Application {
           double x = mouseEvent.getX();                                               //mouseevent svarar mot MouseEvent och inte ActionEvent.
           double y = mouseEvent.getY();
 
-          createLocation(locationName, x,y);
+          try {
+            createLocation(locationName, x, y);
+          } catch (IllegalArgumentException e) {
+              showError("Det finns redan en plats med det namnet");
+          }
 
           center.setOnMouseClicked(null);
 
@@ -434,8 +371,9 @@ public class Gui extends Application {
       }                                                     //styr vad som händer vid musklicken på platsen.
     });
 
-    mapModel.addLocation(location);                                        //Denna gör att location läggs in i ListGraph-klassen.
-    center.getChildren().add(location);
+      mapModel.addLocation(location);                                        //Denna gör att location läggs in i ListGraph-klassen.
+      center.getChildren().add(location);
+
     hasChanges = true;
     //lägger till location - programmet har ändrats
 
