@@ -19,14 +19,14 @@ public class NewLocationForm extends Dialog<String> {
         GridPane grid = new GridPane();
         grid.addRow(0, new Label("Namn:"), name);
 
-        ButtonType placeraType =
+        ButtonType placeType =
                 new ButtonType("Placera", ButtonBar.ButtonData.OK_DONE);
 
         getDialogPane().setContent(grid);
-        getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, placeraType);
+        getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, placeType);
 
         setResultConverter(button->{
-            if (button == placeraType) {
+            if (button == placeType) {
                 if (name.getText().trim().isEmpty()){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setHeaderText(null);

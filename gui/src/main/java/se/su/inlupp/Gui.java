@@ -43,7 +43,7 @@ public class Gui extends Application {
 
   // De här är för att hitta en väg
 
-  private Boolean hasChanges = false;
+  private boolean hasChanges = false;
   //boolsk flagga för att se om programmet har ändrats eller ej (används i meny-alterantiven sen)
 
   private final List<ConnectionLine> connectionLines = new ArrayList<>();
@@ -323,16 +323,15 @@ public class Gui extends Application {
   }
 
   //Hanterare för att ladda in en bild till bakgrunden
-  //Kod från föreläsning
 
 
   private class AddLocationHandler implements EventHandler<ActionEvent> {
 
     @Override
     public void handle(ActionEvent event) {
-      NewLocationForm newLocationform = new NewLocationForm();
+      NewLocationForm newLocationForm = new NewLocationForm();
 
-      newLocationform.showAndWait().ifPresent(locationName -> {
+      newLocationForm.showAndWait().ifPresent(locationName -> {
 
         center.setOnMouseClicked(mouseEvent -> {
           double x = mouseEvent.getX();                                               //mouseevent svarar mot MouseEvent och inte ActionEvent.
@@ -363,10 +362,10 @@ public class Gui extends Application {
       if (removeMode){                                        //removemode är sant, vilket sätts av ta bort knappen.
         new DeleteLocationHandler(location).handle(e);
       }
-      if (connectMode){
+      else if (connectMode){
         new ConnectLocationHandler(location).handle(e);
       }
-      if (findPathMode) {
+      else if (findPathMode) {
         new FindPathHandler(location).handle(e);            //Som du ser så är logiken likadan för de andra knapparna. Knapparna
       }                                                     //styr vad som händer vid musklicken på platsen.
     });
@@ -576,7 +575,7 @@ public class Gui extends Application {
       }
     }
   }
-  //koden är inte rätt här ännu (alla linjer markeras gröna istället) - här ska alla collectionlines i path highlightas
+  //här ska alla collectionlines i path highlightas
 
   private void showPathResult(Path<Location> path){
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -601,6 +600,8 @@ public class Gui extends Application {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setContentText("Det finns ingen plats att ta bort");
         alert.showAndWait();
+        removeMode = false;
+        return;
       }
 
       removeMode = true;
@@ -619,6 +620,8 @@ public class Gui extends Application {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setContentText("För att skapa en väg krävs två platser");
         alert.showAndWait();
+        connectMode = false;
+        return;
       }
 
       connectMode = true;
@@ -630,10 +633,16 @@ public class Gui extends Application {
     @Override
     public void handle(ActionEvent event){
 
-      if (mapModel.getLocations().size() < 2){
+      if (mapModel.getLocations().size() < 2 || connectionLines.isEmpty()){
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setContentText("Det finns ingen väg att hitta - minst två platser krävs");
+        alert.setContentText("Det finns ingen väg att hitta - minst två platser med en väg krävs");
         alert.showAndWait();
+
+        findPathMode = false;
+        pathStart = null;
+        pathEnd = null;
+
+        return;
       }
 
       for (ConnectionLine line : connectionLines) {

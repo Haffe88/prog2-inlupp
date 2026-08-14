@@ -24,26 +24,26 @@ public class ListPath<T> implements Path<T> {
 		return edges.get(edges.size()-1).getDestination();
 		//hämtar sista edge (mha index) i edges-listan, hämtar sen noden (den sista nodens destination)
 	}
-	
-	
+
+
 	@Override
 	public int getTotalWeight() {
-		
+
 		int totalWeight = 0;
-		
+
 		for (Edge<T> edge: edges) {
 			totalWeight += edge.getWeight();
 		}
 		return totalWeight;
 	}
 	//ska returnera summa för alla edges vikter
-	
+
 	@Override
 	public List<Edge<T>> getEdges(){
 		return new ArrayList<>(edges);
 	}
-	
-	
+
+
 	@Override
 	public List<T> getNodes(){
 
@@ -56,25 +56,25 @@ public class ListPath<T> implements Path<T> {
 			T node = edge.getDestination();
 			nodeList.add(node);
 		}
-		
+
 		//Lägger till noder från edges i nodeList
 
 		return nodeList;
 	}
 
-    @Override
-    public Iterator<Edge<T>> iterator() {
-        return edges.iterator();
-    }
-	
+	@Override
+	public Iterator<Edge<T>> iterator() {
+		return edges.iterator();
+	}
+
 	@Override
 	public String toString() {
 
-    return "Från " + getStart() +
-    "\nTill: " + getEnd() +
-    "\nKanter: " + edges +
-    "\nTotal vikt: " + getTotalWeight();
-		
+		return "Från " + getStart() +
+				"\nTill: " + getEnd() +
+				"\nKanter: " + edges +
+				"\nTotal vikt: " + getTotalWeight();
+
 	}
 
 }

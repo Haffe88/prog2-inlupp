@@ -26,4 +26,3 @@ public interface Graph<T> extends Iterable<T> {
 }
 
 //Graf med kopplingslistor
-//Ska tillhandahålla en iterator() som itererar över grafens noder

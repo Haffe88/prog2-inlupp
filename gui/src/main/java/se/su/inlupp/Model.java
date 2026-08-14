@@ -34,11 +34,6 @@ public class Model {
         graph.connect(from, to, name, weight);
     }
 
-    public void disconnectLocations(Location a, Location b) {
-        graph.disconnect(a, b);
-    }
-    //kolla om denna faktiskt behövs då den inte används någonstans än
-
     //Ovan är ListGraph-metoder för att skapa graf, ta bort och lägga till i grafen
 
     public Collection<Edge<Location>> getEdgesFrom(Location location) {
@@ -59,7 +54,6 @@ public class Model {
 
     }
     //Kör metoden findPath() via att skicka med skicka med strängen choice för att skapa ett PathFinder-objekt (DFS/BFS), delegering
-    //flyttade kod från gui för att skapa objektet- för att vi ska separera vyn från modellen.
 
     public Set<Location> getLocations() {
         return graph.getNodes();
@@ -71,6 +65,4 @@ public class Model {
 }
 
 
-//ska innehålla programmets data och logik (gui ska bara hantera gränssnitt och javafx-komponenter)
-//frågan är ifall man då måste ha en nod-klass i backend också? eftersom vi vill skilja vyn (cirkel och label) från själva datan (namn, koordinater)
-//eftersom modelklassen behöver någon typ av nod
+//mellanhand för programmets data och logik i backend och gui som ska bara hantera gränssnitt och javafx-komponenter

@@ -10,7 +10,6 @@ public class ConnectLocationForm extends Dialog<Boolean> {
 
     private TextField name = new TextField();
     private TextField length = new TextField();
-    //Ändra från vikt till avstånd (som vi skrev i planen vi skickade in)?
 
     public ConnectLocationForm(){
         setTitle("Koppla ihop platser");
@@ -66,7 +65,7 @@ public class ConnectLocationForm extends Dialog<Boolean> {
 
         });
 
-        // Det här ovan är felhantering, ungefär som vi gjorde i övning 3.
+        // Det här ovan är felhantering
 
     }
 
